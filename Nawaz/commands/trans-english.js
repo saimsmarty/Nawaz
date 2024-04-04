@@ -1,11 +1,11 @@
 module.exports.config = {
-	name: "trans",
+	name: "english",
 	version: "1.0.1",
 	hasPermssion: 0,
 	credits: "𝐃𝐚𝐫𝐤 𝐑𝐮𝐥𝐞𝐱 𝐊𝐢𝐧𝐠 𝐀𝐧𝐮𝐩",
 	description: "Text translation",
 	commandCategory: "media",
-	usages: "[en/ko/ja/vi] [Text]",
+	usages: "[Text]",
 	cooldowns: 5,
 	dependencies: {
 		"request":  ""
