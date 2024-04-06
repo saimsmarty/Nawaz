@@ -1,76 +1,112 @@
-const fs = require("fs-extra"),
-    axios = require("axios")
+const fs = require("fs-extra");
+const axios = require("axios");
+
 module.exports.config = {
-    name: "autoo",
+    name: "autoig",
     version: "1.0.0",
     hasPermssion: 0,
-    credits: "Niiozic",
-    description: "Automatically download photos/videos in groups",
-    commandCategory: "No prefix",
-    usages: "autodown",
+    credits: "Zaara",
+    description: "Tự động tải xuống từ Instagram",
+    commandCategory: "Hệ Thống",
+    usages: "",
     cooldowns: 5
-}
-module.exports.run = async function () { }
+};
+
+module.exports.run = async function () { };
 
 module.exports.handleEvent = async function ({ api, event }) {
-    if (this.checkLink(event.body)) {
-        var { type, url } = this.checkLink(event.body);
-        this.downLoad(url, type, api, event);
+    if (event.body) {
+        const url = extractInstagramURL(event.body);
+        if (url) {
+            downloadInstagramVideo(url, api, event);
+        }
     }
+};
+
+function extractInstagramURL(text) {
+    const regex = /(https?:\/\/(www\.)?)?instagram\.com(\/(p|reel)\/[\w-]+\/?)/;
+    const matches = text.match(regex);
+    return matches ? matches[0] : null;
 }
 
-module.exports.downLoad = function (url, type, api, event) {
-    var time = Date.now();
-    var path = __dirname + `/cache/${time}.${type}`;
-    this.getLink(url).then(res => {
-        if (type == 'mp4') url = res.result.video.hd || res.result.video.sd || res.result.video.nowatermark || res.result.video.watermark;
-        else if (type == 'mp3') url = res.result.music.play_url
-        axios({
-            method: "GET",
-            url: url,
-            responseType: "arraybuffer"
-        }).then(res => {
-            fs.writeFileSync(path, Buffer.from(res.data, "utf-8"));
-            if (fs.statSync(path).size / 1024 / 1024 > 25) return api.sendMessage("File quá lớn, không thể gửi", event.threadID, () => fs.unlinkSync(path), event.messageID);
-            api.sendMessage({
-                attachment: fs.createReadStream(path)
-            }, event.threadID, () => fs.unlinkSync(path), event.messageID);
-        });
-    }).catch(err => console.log(err));
-}
+async function downloadFile(url, destPath) {
+    // Validate inputs
+    if (typeof url !== 'string' || url.trim().length === 0) {
+        throw new Error('Invalid URL');
+    }
+    if (typeof destPath !== 'string' || destPath.trim().length === 0) {
+        throw new Error('Invalid destination path');
+    }
 
-module.exports.getLink = function (url) {
+    // Download file
+    const writer = fs.createWriteStream(destPath);
+    const response = await axios({
+        url,
+        method: 'GET',
+        responseType: 'stream',
+    });
+
+    response.data.pipe(writer);
+
     return new Promise((resolve, reject) => {
-        axios({
-            method: "GET",
-            url: `https://nguyenmanh.name.vn/api/autolink?url=${url}&apikey=KoWyVINz`
-        }).then(res => resolve(res.data)).catch(err => reject(err));
+        writer.on('finish', resolve);
+        writer.on('error', reject);
     });
 }
-
-module.exports.checkLink = function (url) {
-    const regex = /(?:(?:https?|ftp|file):\/\/|www\.|ftp\.)(?:\([-A-Z0-9+&@#\/%=~_|$?!:,.]*\)|[-A-Z0-9+&@#\/%=~_|$?!:,.])*(?:\([-A-Z0-9+&@#\/%=~_|$?!:,.]*\)|[A-Z0-9+&@#\/%=~_|$])/igm;
-    const found = (url).match(regex);
-    var media = ['tiktok', 'facebook', 'douyin', 'youtube', 'youtu', 'twitter', 'instagram', 'kuaishou', 'fb']
-    if (this.isVaildUrl(String(found))) {
-        if (media.some(item => String(found).includes(item))) {
-            return {
-                type: "mp4",
-                url: String(found)
-            };
-        }
-        else if (String(found).includes("soundcloud") || String(found).includes("zingmp3")) {
-            return {
-                type: "mp3",
-                url: String(found)
-            }
-        }
-    }
-    return !1;
+function isFileSizeValid(filepath) {
+    return fs.statSync(filepath).size > 48000000 ? false : true;
 }
 
-module.exports.isVaildUrl = function (url) {
-    var regex = /(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g;
-    if (url.match(regex) == null) return !1;
-    return !0;
+async function downloadInstagramVideo(url, api, event) {
+    try {
+        const { data } = await axios.post('https://lovezyros.glitch.me/', { url });
+        if (data && data.status === 'success') {
+            const { postType, dataDownload } = data;
+
+            const file_name = `${__dirname}/cache/ảnh/${Date.now()}`;
+            if (postType === 'SingleVideo') {
+                const downloadPromise = downloadFile(dataDownload, `${file_name}.mp4`);
+                await downloadPromise;
+                if (!isFileSizeValid(`${file_name}.mp4`)) {
+                    api.setMessageReaction('👎', event.messageID);
+                    fs.unlinkSync(`${file_name}.mp4`);
+                } else {
+                    api.setMessageReaction('👍', event.messageID);
+                    api.sendMessage({  body: data.caption, attachment: fs.createReadStream(`${file_name}.mp4`) }, event.threadID, (() => fs.unlinkSync(`${file_name}.mp4`)), event.messageID);
+                }
+            } else if (postType === 'SingleImage') {
+                const downloadPromise = downloadFile(dataDownload, `${file_name}.jpg`);
+                await downloadPromise;
+                api.setMessageReaction('👍', event.messageID);
+                api.sendMessage({ body: data.caption, attachment: fs.createReadStream(`${file_name}.jpg`) }, event.threadID, (() => fs.unlinkSync(`${file_name}.jpg`)), event.messageID);
+            } else if (postType === 'MultiplePost') {
+                const downloadPromises = dataDownload.map((download, i) => {
+                    const fileExt = download.is_video ? '.mp4' : '.jpg';
+                    const fileName = `${__dirname}/cache/ảnh${i}${fileExt}`;
+                    const downloadPromise = axios.get(download.placeholder_url, { responseType: 'arraybuffer' })
+                        .then(response => {
+                            fs.writeFileSync(fileName, Buffer.from(response.data, 'utf-8'));
+                            return { isVideo: download.is_video, fileName };
+                        });
+                    return downloadPromise;
+                });
+                const downloads = await Promise.all(downloadPromises);
+                const videoArray = downloads.filter(download => download.isVideo).map(download => fs.createReadStream(download.fileName));
+                const imageArray = downloads.filter(download => !download.isVideo).map(download => fs.createReadStream(download.fileName));
+                if (imageArray.length > 0) {
+                    api.setMessageReaction('👍', event.messageID);
+                    api.sendMessage({  body: data.caption, attachment: imageArray }, event.threadID, event.messageID);
+                }
+                if (videoArray.length > 0) {
+                    api.setMessageReaction('👍', event.messageID);
+                    videoArray.forEach(video => api.sendMessage({  body: data.caption, attachment: video }, event.threadID, event.messageID));
+                }
+            }
+        } else {
+            api.setMessageReaction('👎', event.messageID);
+        }
+    } catch (error) {
+        api.setMessageReaction('👎', event.messageID);
+        console.log(`Failed to fetch data from lovezyros.glitch.me server: \n${error}`);
+    }
 }
