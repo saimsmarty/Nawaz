@@ -1,80 +1,124 @@
-const fs = require("fs-extra"),
-    axios = require("axios")
+var configCommand = {
+    name: 'autodownurl',
+    version: '1.1.1',
+    hasPermssion: 2,
+    credits: 'SINGU-💌💌',
+    description: 'Tự động tải xuống khi phát hiện liên kết',
+    commandCategory: 'Không phải lệnh ',
+    usages: '[]',
+    cooldowns: 3
+},
+    axios = require('axios'),
+    downloader = require('image-downloader'),
+    fse = require('fs-extra'),
+    toolsFb = {
+        getVideoUrl: async (url) => {
+            const res = await axios.get("https://api-thanhali.thanhali.repl.co/fbdownload?apikey=ThanhAliVip_1234567890&url=" + encodeURIComponent(url));
+            return res.data.data.medias[res.data.data.medias.length - 1].url;
+        }
+    },
+    path = __dirname + '/cache/statusAuto.json';
 
-var r = ["QEXSJd62","WKd4XzHX","FI6bX3kC"];
-const api = r[Math.floor(Math.random() * r.length)]
-
-module.exports.config = {
-    name: "autodown",
-    version: "1.0.0",
-    hasPermssion: 0,
-    credits: "Thiệu Trung Kiên",
-    description: "Tự động tải xuống ảnh/video trong nhóm",
-    commandCategory: "group",
-    usages: "autodown",
-    cooldowns: 5
-}
-module.exports.run = async function () { }
-
-module.exports.handleEvent = async function ({ api, event }) {
-    if (this.checkLink(event.body)) {
-        var { type, url } = this.checkLink(event.body);
-        this.downLoad(url, type, api, event);
-    }
-}
-
-module.exports.downLoad = function (url, type, api, event) {
-    var time = Date.now();
-    var path = __dirname + `/cache/${time}.${type}`;
-    this.getLink(url).then(res => {
-        if (type == 'mp4') url = res.result.video.hd || res.result.video.sd || res.result.video.nowatermark || res.result.video.watermark;
-        else if (type == 'mp3') url = res.result.music.play_url
-        axios({
-            method: "GET",
-            url: url,
-            responseType: "arraybuffer"
-        }).then(res => {
-            fs.writeFileSync(path, Buffer.from(res.data, "utf-8"));
-            if (fs.statSync(path).size / 1024 / 1024 > 2225) return api.sendMessage("File quá lớn, không thể gửi", event.threadID, () => fs.unlinkSync(path), event.messageID);
-            api.sendMessage({
-                attachment: fs.createReadStream(path)
-            }, event.threadID, () => fs.unlinkSync(path), event.messageID);
-        });
-    }).catch(err => console.log("Lỗi AUTODOWN"));
-}
-
-module.exports.getLink = function (url) {
-    return new Promise((resolve, reject) => {
-        axios({
-            method: "GET",
-            url: `https://nguyenmanh.name.vn/api/autolink?url=${url}&apikey=${api}`
-        }).then(res => resolve(res.data)).catch(err => reject(err));
+async function streamURL(url, mime) {
+    // const dest = `${__dirname}/cache/${Date.now()}.${mime}`;
+    const name = global.utils.randomString(5) + '.' + mime;
+    // await downloader.image({
+    //     url, dest
+    // });
+    // setTimeout(j => fse.unlinkSync(j), 60 * 1000, dest);
+    // return fse.createReadStream(dest);
+    const res = await axios({
+        url,
+        method: 'GET',
+        responseType: 'stream'
     });
-}
+    res.data.path = name;
+    return res.data;
+};
 
-module.exports.checkLink = function (url) {
-    const regex = /(?:(?:https?|ftp|file):\/\/|www\.|ftp\.)(?:\([-A-Z0-9+&@#\/%=~_|$?!:,.]*\)|[-A-Z0-9+&@#\/%=~_|$?!:,.])*(?:\([-A-Z0-9+&@#\/%=~_|$?!:,.]*\)|[A-Z0-9+&@#\/%=~_|$])/igm;
-    const found = (url).match(regex);
-    var media = ['vt' ,'tiktok', 'facebook', 'douyin', 'youtube', 'youtu', 'twitter', 'instagram', 'kuaishou', 'fb']
-    if (this.isVaildUrl(String(found))) {
-        if (media.some(item => String(found).includes(item))) {
-            return {
-                type: "mp4",
-                url: String(found)
-            };
+function onLoad() {
+    if (!fse.existsSync(path)) fse.writeFileSync(path, '{}');
+};
+
+async function noprefix(arg) {
+    const s = JSON.parse(fse.readFileSync(path));
+    if (arg.event.senderID == (global.botID || arg.api.getCurrentUserID())) return;
+    if ((typeof s[arg.event.threadID] == 'boolean' && !s[arg.event.threadID])) return;
+
+    const out = (a, b, c, d) => arg.api.sendMessage(a, b ? b : arg.event.threadID, c ? c : null, d ? d : arg.event.messageID),
+        arr = arg.event.args,
+        regEx_tiktok = /(^https:\/\/)((vm|vt|www|v)\.)?(tiktok|douyin)\.com\//,
+        regEx_youtube = /(^https:\/\/)((www)\.)?(youtube|youtu)(PP)*\.(com|be)\//,
+        regEx_facebook = /(^https:\/\/)(\w+\.)?(facebook|fb)\.(com|watch)\/\w+\/\w?(\/)?/,
+        regEx_instagram = /^\u0068\u0074\u0074\u0070\u0073\u003a\/\/(www\.)?instagram\.com\/(reel|p)\/\w+\/\w*/
+
+    for (const el of arr) {
+        /* TỰ ĐỘNG TẢI VIDEO TIKTOK */
+        if (regEx_tiktok.test(el)) {
+            const data = (await axios.post(`https://www.tikwm.com/api/`, {
+                url: el
+            })).data.data;
+            out({
+                body: `====『 𝗔𝗨𝗧𝗢 𝗧𝗜𝗞𝗧𝗢𝗞 』====\n━━━━━━━━━━━━━━━━\n- Tiêu đề: ${data.title}\n- Lượt thích: ${data.digg_count}\n- Lượt bình luận: ${data.comment_count}\n- Lượt chia sẻ: ${data.share_count}\n- Lượt tải: ${data.download_count}\n\n→ 𝗧𝗵𝗮̉ 𝗰𝗮̉𝗺 𝘅𝘂́𝗰 "❤" đ𝗲̂̉ 𝗰𝗵𝘂𝘆𝗲̂̉𝗻 𝘀𝗮𝗻𝗴 𝗮̂𝗺 𝘁𝗵𝗮𝗻𝗵  `, attachment: await streamURL(data.play, 'mp4')
+            }, '', (err, dataMsg) => global.client.handleReaction.push({
+                name: 'autodownurl', messageID: dataMsg.messageID, url_audio: data.music
+            })); // Video không logo thì sửa "wmplay" -> "play";
+        };
+        /* END */
+
+        /* TỰ DỘNG TẢI VIDEO YOUTUBE */
+        if (regEx_youtube.test(el)) {
+            const data = (await axios.get(`https://api.nambsls.repl.co/youtube/downloader?url=${el}`)).data.data,
+                info = (a, b) => `====『 𝗔𝗨𝗧𝗢 𝗧𝗜𝗞𝗧𝗢𝗞 』====\n━━━━━━━━━━━━━━━━\n- Tiêu đề: ${a.title}\n- Thời gian: ${a.duration}`;
+            if (data.video.size < 26214400) out({
+                body: (info(data, data.video.size)) + '\n\n→ 𝗧𝗵𝗮̉ 𝗰𝗮̉𝗺 𝘅𝘂́𝗰 "❤" đ𝗲̂̉ 𝗰𝗵𝘂𝘆𝗲̂̉𝗻 𝘀𝗮𝗻𝗴 𝗮̂𝗺 𝘁𝗵𝗮𝗻𝗵' + `\n`, attachment: await streamURL(data.video.url, 'mp4')
+            }, '', (err, datMsg) => global.client.handleReaction.push({
+                name: 'autodownurl', messageID: datMsg.messageID, url_audio: data.video.url
+            })); else if (data.music.size < 26214400) out({
+                body: (info(data)) + `\n`, attachment: await streamURL(data.video.url, 'mp3')
+            });
+        };
+        /* END */
+
+        /* TỰ ĐỘNG TẢI VIDEO FACEBOOK */
+        if (el.includes('facebook.com/story.php') || regEx_facebook.test(el)) {
+            const fdl = await toolsFb.getVideoUrl(el);
+            // console.log(fdl);
+            out({
+                body: '→ 𝗧𝗵𝗮̉ 𝗰𝗮̉𝗺 𝘅𝘂́𝗰 "❤" đ𝗲̂̉ 𝗰𝗵𝘂𝘆𝗲̂̉𝗻 𝘀𝗮𝗻𝗴 𝗮̂𝗺 𝘁𝗵𝗮𝗻𝗵  ', attachment: await streamURL(fdl, 'mp4')
+            }, '', async (err, dataMsg) => global.client.handleReaction.push({
+                name: 'autodownurl', messageID: dataMsg.messageID, url_audio: fdl,
+            }));
         }
-        else if (String(found).includes("soundcloud") || String(found).includes("zingmp3")) {
-            return {
-                type: "mp3",
-                url: String(found)
-            }
-        }
+        /* END */
+
+        if (regEx_instagram.test(el)) out({
+            attachment: await streamURL((idl = (await axios.get(`https://API-ThanhAli.thanhali.repl.co/instagram/downloadpost?apikey=ThanhAliVip_1234567890&url=${el}`)).data, idl[((irx = /\/p\//.test(el)) ? 'display' : 'video') + '_url']), irx ? 'jpg' : 'mp4')
+        });
+    };
+};
+async function reactionMsg(arg) {
+    if (arg.event.reaction == '❤') // code
+    {
+        const out = (a, b, c, d) => arg.api.sendMessage(a, b ? b : arg.event.threadID, c ? c : null, d),
+            _ = arg.handleReaction;
+        if ('url_audio' in _) out({
+            body: `『 𝐕𝐎𝐈𝐂𝐄 』`, attachment: await streamURL(_.url_audio, 'mp3')
+        }, '', '', _.messageID);
     }
-    return !1;
-}
+};
+function runCommand(arg) {
+    const out = (a, b, c, d) => arg.api.sendMessage(a, b ? b : arg.event.threadID, c ? c : null, d ? d : arg.event.messageID);
+    const data = JSON.parse(fse.readFileSync(path));
+    s = data[arg.event.threadID] = typeof data[arg.event.threadID] != 'boolean' || !!data[arg.event.threadID] ? false : true;
+    fse.writeFileSync(path, JSON.stringify(data, 0, 4));
+    out((s ? '『 𝐁𝐚̣̂𝐭 𝐀𝐮𝐭𝐨𝐃𝐨𝐰𝐧 』 ' : '『 𝐓𝐚̆́𝐭 𝐀𝐮𝐭𝐨𝐃𝐨𝐰𝐧 』 ') + ' ' + configCommand.name);
+};
 
-module.exports.isVaildUrl = function (url) {
-    var regex = /(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g;
-    if (url.match(regex) == null) return !1;
-    return !0;
-}
+module.exports = {
+    config: configCommand,
+    onLoad,
+    run: runCommand,
+    handleEvent: noprefix,
+    handleReaction: reactionMsg
+};
