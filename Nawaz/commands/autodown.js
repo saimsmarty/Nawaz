@@ -1,112 +1,101 @@
-const fs = require("fs-extra");
-const axios = require("axios");
+var configCommand = {
+    name: 'autodownurl',
+    version: '1.1.1',
+    hasPermssion: 1,
+    credits: 'DC-Nam',
+    description: 'Tự động tải xuống khi phát hiện liên kết',
+    commandCategory: 'Tiện ích',
+    usages: '[]',
+    cooldowns: 3
+},
+axios = require('axios'),
+downloader = require('image-downloader'),
+fse = require('fs-extra'),
+toolsFb = require('tools-fb'),
+path = __dirname+'/cache/statusAuto.json';
 
-module.exports.config = {
-    name: "autoig",
-    version: "1.0.0",
-    hasPermssion: 0,
-    credits: "Zaara",
-    description: "Tự động tải xuống từ Instagram",
-    commandCategory: "Hệ Thống",
-    usages: "",
-    cooldowns: 5
+async function streamURL(url, mime) {
+    const dest = `${__dirname}/cache/${Date.now()}.${mime}`;
+    await downloader.image({
+        url, dest
+    });
+    setTimeout(j=>fse.unlinkSync(j), 60*1000, dest);
+    return fse.createReadStream(dest);
 };
 
-module.exports.run = async function () { };
-
-module.exports.handleEvent = async function ({ api, event }) {
-    if (event.body) {
-        const url = extractInstagramURL(event.body);
-        if (url) {
-            downloadInstagramVideo(url, api, event);
-        }
-    }
+function onLoad() {
+    if (!fse.existsSync(path)) fse.writeFileSync(path, '{}');
 };
 
-function extractInstagramURL(text) {
-    const regex = /(https?:\/\/(www\.)?)?instagram\.com(\/(p|reel)\/[\w-]+\/?)/;
-    const matches = text.match(regex);
-    return matches ? matches[0] : null;
-}
+async function noprefix(arg) {
+    const s = JSON.parse(fse.readFileSync(path));
+    if (arg.event.senderID == (global.botID || arg.api.getCurrentUserID())) return;
+    if ((typeof s[arg.event.threadID] == 'boolean' && !s[arg.event.threadID])) return;
 
-async function downloadFile(url, destPath) {
-    // Validate inputs
-    if (typeof url !== 'string' || url.trim().length === 0) {
-        throw new Error('Invalid URL');
-    }
-    if (typeof destPath !== 'string' || destPath.trim().length === 0) {
-        throw new Error('Invalid destination path');
-    }
+    const out = (a, b, c, d) => arg.api.sendMessage(a, b?b: arg.event.threadID, c?c: null, d?d: arg.event.messageID),
+    arr = arg.event.args,
+    regEx_tiktok = /(^https:\/\/)((vm|vt|www|v)\.)?(tiktok|douyin)\.com\//,
+    regEx_youtube = /(^https:\/\/)((www)\.)?(youtube|youtu)(PP)*\.(com|be)\//,
+    regEx_facebook = /(^https:\/\/)(\w+\.)?(facebook|fb)\.(com|watch)\/\w+\/\w?(\/)?/,
+    regEx_instagram = /^\u0068\u0074\u0074\u0070\u0073\u003a\/\/(www\.)?instagram\.com\/(reel|p)\/\w+\/\w*/
 
-    // Download file
-    const writer = fs.createWriteStream(destPath);
-    const response = await axios({
-        url,
-        method: 'GET',
-        responseType: 'stream',
-    });
+    for (const el of arr) {
+        /* TỰ ĐỘNG TẢI VIDEO TIKTOK */
+        if (regEx_tiktok.test(el)) {
+            const data = (await axios.post(`https://www.tikwm.com/api/`, {
+                url: el
+            })).data.data;
+            out({
+                body: `====== [ 𝐓𝐈𝐊𝐓𝐎𝐊 ] ======\n━━━━━━━━━━━━━━\n\n💬 𝗧𝗶𝘁𝗹𝗲: ${data.title}\n❤️ 𝗟𝘂̛𝗼̛̣𝘁 𝘁𝗶𝗺: ${data.digg_count}\n💭 𝗧𝗼̂̉𝗻𝗴 𝗯𝗶̀𝗻𝗵 𝗹𝘂𝗮̣̂𝗻: ${data.comment_count}\n🔗 𝗟𝘂̛𝗼̛̣𝘁 𝗰𝗵𝗶𝗮 𝘀𝗲̉: ${data.share_count}\n📥 𝗟𝘂̛𝗼̛̣𝘁 𝘁𝗮̉𝗶: ${data.download_count}\n\n🌸 𝗖𝗵𝘂̛́𝗰 𝗻𝗮̆𝗻𝗴 𝗮𝘂𝘁𝗼𝗱𝗼𝘄𝗻 𝗸𝗵𝗶 𝗻𝗵𝗮̣̂𝗻 𝗹𝗶𝗻𝗸 𝘁𝗿𝗼𝗻𝗴 𝗻𝗵𝗼́𝗺\n\n👉 𝗧𝗵𝗮̉ 𝗰𝗮̉𝗺 𝘅𝘂́𝗰 "👌" 𝗻𝗲̂́𝘂 𝗺𝘂𝗼̂́𝗻 𝘁𝗮̉𝗶 𝗻𝗵𝗮̣𝗰`, attachment: await streamURL(data.play, 'mp4')}, '', (err, dataMsg) => global.client.handleReaction.push({
+                    name: 'autodownurl', messageID: dataMsg.messageID, url_audio: data.music
+                })); // Video không logo thì sửa "wmplay" -> "play";
+        };
+        /* END */
 
-    response.data.pipe(writer);
+        /* TỰ DỘNG TẢI VIDEO YOUTUBE */
+        if (regEx_youtube.test(el)) {
+            const data = (await axios.get(`https://api.nambsls.repl.co/youtube/downloader?url=${el}`)).data.data,
+            info = (a, b) => `====== [ 𝐘𝐎𝐔𝐓𝐔𝐁𝐄 ] ======\n━━━━━━━━━━━━━━\n\n💬 𝗧𝗶𝘁𝗹𝗲: ${a.title}\n⏱ 𝗧𝗵𝗼̛̀𝗶 𝗴𝗶𝗮𝗻: ${a.duration}\n\n🌸 𝗖𝗵𝘂̛́𝗰 𝗻𝗮̆𝗻𝗴 𝗮𝘂𝘁𝗼𝗱𝗼𝘄𝗻 𝗸𝗵𝗶 𝗻𝗵𝗮̣̂𝗻 𝗹𝗶𝗻𝗸 𝘁𝗿𝗼𝗻𝗴 𝗻𝗵𝗼́𝗺`;
+            if (data.video.size < 26214400)out({
+                body: (info(data, data.video.size))+'\n\n👉 𝗧𝗵𝗮̉ 𝗰𝗮̉𝗺 𝘅𝘂́𝗰 "👌" 𝗻𝗲̂́𝘂 𝗺𝘂𝗼̂́𝗻 𝘁𝗮̉𝗶 𝗻𝗵𝗮̣𝗰'+`\n`, attachment: await streamURL(data.video.url, 'mp4')}, '', (err, datMsg) => global.client.handleReaction.push({
+                    name: 'autodownurl', messageID: datMsg.messageID, url_audio: data.video.url
+                })); else if (data.music.size < 26214400)out({
+                body: (info(data))+`\n`, attachment: await streamURL(data.video.url, 'mp3')});
+        };
+        /* END */
 
-    return new Promise((resolve, reject) => {
-        writer.on('finish', resolve);
-        writer.on('error', reject);
-    });
-}
-function isFileSizeValid(filepath) {
-    return fs.statSync(filepath).size > 48000000 ? false : true;
-}
+        /* TỰ ĐỘNG TẢI VIDEO FACEBOOK */
+        if (el.includes('facebook.com/story.php') || regEx_facebook.test(el)) out({
+            body: '====== [ 𝐒𝐓𝐎𝐑𝐘 𝐅𝐁 ] ======\n━━━━━━━━━━━━━━\n\n🌸 𝗖𝗵𝘂̛́𝗰 𝗻𝗮̆𝗻𝗴 𝗮𝘂𝘁𝗼𝗱𝗼𝘄𝗻 𝗸𝗵𝗶 𝗻𝗵𝗮̣̂𝗻 𝗹𝗶𝗻𝗸 𝘁𝗿𝗼𝗻𝗴 𝗻𝗵𝗼́𝗺\n👉 𝗧𝗵𝗮̉ 𝗰𝗮̉𝗺 𝘅𝘂́𝗰 "👌" 𝗻𝗲̂́𝘂 𝗺𝘂𝗼̂́𝗻 𝘁𝗮̉𝗶 𝗻𝗵𝗮̣𝗰', attachment: await streamURL(((fdl = await toolsFb.getVideoUrl(el)), fdl.HD), 'mp4')}, '', (err, dataMsg) => global.client.handleReaction.push({
+                name: 'autodownurl', messageID: dataMsg.messageID, url_audio: fdl.audio
+            }));
+        /* END */
 
-async function downloadInstagramVideo(url, api, event) {
-    try {
-        const { data } = await axios.post('https://lovezyros.glitch.me/', { url });
-        if (data && data.status === 'success') {
-            const { postType, dataDownload } = data;
+        if (regEx_instagram.test(el))out({
+            body: '=== [ 𝐈𝐍𝐒𝐓𝐀𝐆𝐑𝐀𝐌 ] ===\n━━━━━━━━━━━━\n\n🌸 𝗖𝗵𝘂̛́𝗰 𝗻𝗮̆𝗻𝗴 𝗮𝘂𝘁𝗼𝗱𝗼𝘄𝗻 𝗸𝗵𝗶 𝗻𝗵𝗮̣̂𝗻 𝗹𝗶𝗻𝗸 𝘁𝗿𝗼𝗻𝗴 𝗻𝗵𝗼́𝗺\n👉 𝗧𝗵𝗮̉ 𝗰𝗮̉𝗺 𝘅𝘂́𝗰 "👌" 𝗻𝗲̂́𝘂 𝗺𝘂𝗼̂́𝗻 𝘁𝗮̉𝗶 𝗻𝗵𝗮̣𝗰', attachment: await streamURL((idl = (await axios.get(`https://apiuwuapi.ducdz999.repl.co/instagram/downloadpost?url=${el}`)).data, idl[((irx = /\/p\//.test(el))?'display': 'video')+'_url']), irx?'jpg': 'mp4')});
+    };
+};
+async function reactionMsg(arg) {
+  if(arg.event.reaction == '👌') // code
+  {
+    const out = (a, b, c, d) => arg.api.sendMessage(a, b?b: arg.event.threadID, c?c: null, d),
+    _ = arg.handleReaction;
+    if ('url_audio'in _) out({
+        body: `====== [ 𝐌𝐔𝐒𝐈𝐂 ] ======\n━━━━━━━━━━━━━━\n\n👉 𝗟𝗮̂́𝘆 𝗮̂𝗺 𝘁𝗵𝗮𝗻𝗵 𝘁𝘂̛̀ 𝘃𝗶𝗱𝗲𝗼 𝘁𝗵𝗮̀𝗻𝗵 𝗰𝗼̂𝗻𝗴 `, attachment: await streamURL(_.url_audio, 'mp3')}, '', '', _.messageID);
+  }
+};
+function runCommand(arg) {
+    const out = (a, b, c, d) => arg.api.sendMessage(a, b?b: arg.event.threadID, c?c: null, d?d: arg.event.messageID);
+    const data = JSON.parse(fse.readFileSync(path));
+    s = data[arg.event.threadID] = typeof data[arg.event.threadID] != 'boolean'||!!data[arg.event.threadID]?false: true;
+    fse.writeFileSync(path, JSON.stringify(data, 0, 4));
+    out((s?'[ 𝗔𝗨𝗧𝗢 𝗗𝗢𝗪𝗡𝗟𝗢𝗔𝗗 ] - 𝗞𝗶́𝗰𝗵 𝗵𝗼𝗮̣𝘁 𝗯𝗮̣̂𝘁 𝘁𝗵𝗮̀𝗻𝗵 𝗰𝗼̂𝗻𝗴': '[ 𝗔𝗨𝗧𝗢 𝗗𝗢𝗪𝗡𝗟𝗢𝗔𝗗 ] - 𝗧𝗮̆́𝘁 𝘁𝗵𝗮̀𝗻𝗵 𝗰𝗼̂𝗻𝗴')+' '+configCommand.name+' ✅');
+};
 
-            const file_name = `${__dirname}/cache/ảnh/${Date.now()}`;
-            if (postType === 'SingleVideo') {
-                const downloadPromise = downloadFile(dataDownload, `${file_name}.mp4`);
-                await downloadPromise;
-                if (!isFileSizeValid(`${file_name}.mp4`)) {
-                    api.setMessageReaction('👎', event.messageID);
-                    fs.unlinkSync(`${file_name}.mp4`);
-                } else {
-                    api.setMessageReaction('👍', event.messageID);
-                    api.sendMessage({  body: data.caption, attachment: fs.createReadStream(`${file_name}.mp4`) }, event.threadID, (() => fs.unlinkSync(`${file_name}.mp4`)), event.messageID);
-                }
-            } else if (postType === 'SingleImage') {
-                const downloadPromise = downloadFile(dataDownload, `${file_name}.jpg`);
-                await downloadPromise;
-                api.setMessageReaction('👍', event.messageID);
-                api.sendMessage({ body: data.caption, attachment: fs.createReadStream(`${file_name}.jpg`) }, event.threadID, (() => fs.unlinkSync(`${file_name}.jpg`)), event.messageID);
-            } else if (postType === 'MultiplePost') {
-                const downloadPromises = dataDownload.map((download, i) => {
-                    const fileExt = download.is_video ? '.mp4' : '.jpg';
-                    const fileName = `${__dirname}/cache/ảnh${i}${fileExt}`;
-                    const downloadPromise = axios.get(download.placeholder_url, { responseType: 'arraybuffer' })
-                        .then(response => {
-                            fs.writeFileSync(fileName, Buffer.from(response.data, 'utf-8'));
-                            return { isVideo: download.is_video, fileName };
-                        });
-                    return downloadPromise;
-                });
-                const downloads = await Promise.all(downloadPromises);
-                const videoArray = downloads.filter(download => download.isVideo).map(download => fs.createReadStream(download.fileName));
-                const imageArray = downloads.filter(download => !download.isVideo).map(download => fs.createReadStream(download.fileName));
-                if (imageArray.length > 0) {
-                    api.setMessageReaction('👍', event.messageID);
-                    api.sendMessage({  body: data.caption, attachment: imageArray }, event.threadID, event.messageID);
-                }
-                if (videoArray.length > 0) {
-                    api.setMessageReaction('👍', event.messageID);
-                    videoArray.forEach(video => api.sendMessage({  body: data.caption, attachment: video }, event.threadID, event.messageID));
-                }
-            }
-        } else {
-            api.setMessageReaction('👎', event.messageID);
-        }
-    } catch (error) {
-        api.setMessageReaction('👎', event.messageID);
-        console.log(`Failed to fetch data from lovezyros.glitch.me server: \n${error}`);
-    }
-}
+module.exports = {
+    config: configCommand,
+    onLoad,
+    run: runCommand,
+    handleEvent: noprefix,
+    handleReaction: reactionMsg
+};
