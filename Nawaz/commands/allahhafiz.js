@@ -12,7 +12,9 @@ module.exports.config = {
 
 module.exports.handleEvent = function({ api, event, client, __GLOBAL }) {
   var { threadID, messageID } = event;
-  if (event.body.indexOf("By")==0 || event.body.indexOf("Bye")==0 || event.body.indexOf("by")==0 || event.body.indexOf("Allah hafiz")==0) {
+let react = event.body.toLowerCase();
+ if (react.includes("By") ||  react.includes("Bye") || react.includes("by") || 
+react.includes("Allah hafiz")) {
     var msg = {
         body: "𝐁𝐘𝐞 , 𝐀𝐥𝐥𝐚𝐡 𝐇𝐚𝐟𝐢𝐳 𝐁𝐚𝐛𝐮 😍",
         attachment: 
