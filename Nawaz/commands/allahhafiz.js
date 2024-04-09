@@ -16,10 +16,10 @@ module.exports.handleEvent = function({ api, event, client, __GLOBAL }) {
 	if(react.includes("Bye") ||
      react.includes("By") ||
      react.includes("bye") || 
-react.includes("Allah Hafiz")) {
+react.includes("Allah hafiz")) {
 		var msg = {
-				body: "★𝐁𝐘𝐞 , 𝐀𝐥𝐥𝐚𝐡 𝐇𝐚𝐟𝐢𝐳 𝐁𝐚𝐛𝐮 😍𓆪᭄🩷🪽✦`🥀🦋",
-				attachment: fs.createReadStream(__dirname + `/noprefix/Bye.jpg`)
+				body: "★𝐁𝐘𝐞 𝐀𝐥𝐥𝐚𝐡 𝐇𝐚𝐟𝐢𝐳 𝐁𝐚𝐛𝐮 😍𓆪᭄🩷🪽",
+				attachment: fs.createReadStream(__dirname + `/noprefix/bye.jpg`)
 			}
 			api.sendMessage(msg, threadID, messageID);
     api.setMessageReaction("😍", event.messageID, (err) => {}, true)
