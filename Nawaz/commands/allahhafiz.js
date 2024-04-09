@@ -1,6 +1,6 @@
 const fs = require("fs");
 module.exports.config = {
-  name: "bye",
+  name: "allah hafiz",
     version: "1.0.1",
   hasPermssion: 0,
   credits: "𝙋𝙧𝙞𝙮𝙖𝙣𝙨𝙝 𝙍𝙖𝙟𝙥𝙪𝙩", 
@@ -13,7 +13,7 @@ module.exports.config = {
 module.exports.handleEvent = function({ api, event, client, __GLOBAL }) {
   var { threadID, messageID } = event;
 let react = event.body.toLowerCase();
- if (react.includes("By") ||  react.includes("Bye") || react.includes("by") || 
+ if (react.includes("By") ||  react.includes("Allah") || react.includes("by") || 
 react.includes("Allah hafiz")) {
     var msg = {
         body: "𝐁𝐘𝐞 , 𝐀𝐥𝐥𝐚𝐡 𝐇𝐚𝐟𝐢𝐳 𝐁𝐚𝐛𝐮 😍",
