@@ -1,5 +1,5 @@
 module.exports.config = {
-  name: "cdp",
+  name: "cdpv2",
   version: "1.0.0",
   hasPermssion: 0,
   credits: "John Arida/Change Api by Siegfried Sama",
