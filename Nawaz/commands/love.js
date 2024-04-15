@@ -1,5 +1,5 @@
 module.exports.config = {
-    name: "love2",
+    name: "love",
     version: "1.0.1",
     hasPermssion: 0,
     credits: "JRT",
