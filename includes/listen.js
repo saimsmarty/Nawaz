@@ -131,7 +131,7 @@ module.exports = function({ api, models }) {
         return logger.loader(global.getText('listen', 'failLoadEnvironment', error), 'error');
     }
 }());
-  logger(`${api.getCurrentUserID()} - [ ${global.config.PREFIX} ] • ${(!global.config.BOTNAME) ? "This bot was made by Priyansh" : global.config.BOTNAME}`, "[ BOT INFO ]");
+  logger(`${api.getCurrentUserID()} - [ ${global.config.PREFIX} ] • ${(!global.config.BOTNAME) ? "This bot was made by Nawaz" : global.config.BOTNAME}`, "[ BOT INFO ]");
 
   ///////////////////////////////////////////////
   //========= Require all handle need =========//
@@ -264,23 +264,6 @@ module.exports = function({ api, models }) {
   /////////////////////////////////////////////////
 
   return (event) => {
-    if (event.type == "change_thread_image") api.sendMessage(`» [ GROUP UPDATES ] ${event.snippet}`, event.threadID);
-    let data = JSON.parse(fs.readFileSync(__dirname + "/../Nawaz/commands/Priyanshu/approvedThreads.json"));
-    let adminBot = global.config.ADMINBOT
-    if (!data.includes(event.threadID) && !adminBot.includes(event.senderID)) {
-      //getPrefix
-      const threadSetting = global.data.threadData.get(parseInt(event.threadID)) || {};
-      const prefix = (threadSetting.hasOwnProperty("PREFIX")) ? threadSetting.PREFIX : global.config.PREFIX;
-
-      //check body
-      if (event.body && event.body == `${prefix}request`) {
-        adminBot.forEach(e => {
-          api.sendMessage(`» ID: ${event.threadID}\n» Requested approval! `, e);
-        })
-        return api.sendMessage(`Sent a request to the admin bot(s) !`, event.threadID);
-      }
-      if (event.body && event.body.startsWith(prefix)) return api.sendMessage(`✨ApKa Group Approved Nahi Hai🙌.\n 🖤So Approved Ke LiYe Request Do, Ese 👉 ${prefix}request\n 🔥𝗢𝗪𝗡𝗘𝗥 🔥☞︎︎︎ 🦋⃝𓆩̬𝐍ɑ͜͡𝘄ɑ͜͡𝐳𓆪᭄___🩷🪽 ☜︎︎︎✰ \n🖤𝚈𝚘𝚞 𝙲𝚊𝚗 𝙲𝚊𝚕𝚕 𝙷𝚒𝚖 🔥☞︎︎︎ 🦋⃝𓆩̬𝐍ɑ͜͡𝘄ɑ͜͡𝐳𓆪᭄___🩷🪽 ☜︎︎︎✰🖤\n🙈🄾🅆🄽🄴🅁 🄲🄾🄽🅃🄰🄲🅃 🄻🄸🄽🄺🅂🙈➪\n𝗙𝗔𝗖𝗘𝗕𝗢𝗢𝗞 🧨https://www.facebook.com/itznawaz007\n📑 Agar Approval Nahi 🙅🏻‍♂️ Mil Raha Hai To Mere Øwner🖤 Ko Direct Add Kar Sakte ho Fb Id link se 😊💖\n👋For Any Kind Of Help 🙈🄾🅆🄽🄴🅁 🄲🄾🄽🅃🄰🄲🅃 🄻🄸🄽🄺🅂🙈➪\n✅𝗜𝗡𝗦𝗧𝗔𝗚𝗥𝗔𝗠 𝗨𝗦𝗘𝗥𝗡𝗔𝗠𝗘👉 https://instagram.com/itz_nawaz__007`, event.threadID);
-    };
     switch (event.type) {
       case "message":
       case "message_reply":
