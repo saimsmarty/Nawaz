@@ -1,6 +1,6 @@
 const coindown = 50
 module.exports.config = {
-	name: "fampair",
+	name: "pairv9",
 	version: "1.0.1",
 	hasPermssion: 0,
 	credits: "MR CHAND",
