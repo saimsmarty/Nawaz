@@ -1,156 +1,101 @@
+const axios = require("axios");
+const fs = require("fs");
+const { loadImage, createCanvas, registerFont } = require("canvas");
+
 module.exports.config = {
-	name: "fbcoverv2",
-	version: "1.0.0",
-	hasPermssion: 0,
-	credits: "𝐏𝐫𝐢𝐲𝐚𝐧𝐬𝐡 𝐑𝐚𝐣𝐩𝐮𝐭",
-	description: "banner",
-	commandCategory: "Image",
-	usages: "",
-	cooldowns: 5
+    name: "fbcover2",
+    version: "1.0.0",
+    hasPermssion: 0,
+    credits: "MR CHAND",
+    description: "banner",
+    commandCategory: "game",
+    usages: "",
+    cooldowns: 5
   };
-  
-  module.exports.run = async function({ api, args, event }) {
-  
-	const { threadID, messageID, senderID, body } = event;
-	
-	const request = require("request");
-	const axios = require("axios");
-	const fs = require("fs-extra");
-	
-	if(args[0] == "list") {
-  
-		const res = await axios.get("https://api.nguyenmanh.name.vn/taoanhdep/list");
-		
-		var trang = 1;
-		trang = parseInt(args[1]) || 1;
-		trang < -1 ? trang = 1 : "";
-		var limit = 11;
-		var danhsach = res.data.listAnime.length;
-		var soTrang = Math.ceil(danhsach / limit);
-		var msg = [];
-  
-		for (var i = limit * (trang - 1); i < limit * (trang - 1) + limit; i++) {
-			if (i >= danhsach) break;
-			var nv = res.data.listAnime[i].name;
-			msg += `${i + 0}. ${nv}\n`
-		}
-  
-		msg += `» All ${danhsach} character\n» Number of pages (${trang}/${soTrang})\n» Use ${global.config.PREFIX}fbcover list <number of pages> to be able to see the next page`;
-	  return api.sendMessage(`●─●Emilia●──●\n` + msg + `\n●──●End●──●`, threadID, messageID);
-	  } else if(args[0] == "find"){
-	 var char = args[1];
-	  
-	  const res = await axios.get(`https://api.nguyenmanh.name.vn/taoanhdep/search?key=${encodeURIComponent(char)}`);
-  
-	  
-	  var id = res.data.ID;
-	   
-	   return api.sendMessage(`ID của ${char} là: ${id - 1}`, threadID, messageID);
-	   
-	 } 
-	  
-	 else if(args[0] == "color") {
-  
-		const mautienganh = "https://4.bp.blogspot.com/-_nVsmtO-a8o/VYfZIUJXydI/AAAAAAAACBQ/FHfioHYszpk/w1200-h630-p-k-no-nu/cac-mau-trong-tieng-anh.jpg";
-		var callback = () => {
-			api.sendMessage({
-				body: "[ English color list ]",
-				attachment: fs.createReadStream(__dirname + `/cache/mautienganh.jpg`)
-			}, threadID, () => fs.unlinkSync(__dirname + `/cache/mautienganh.jpg`))
-		};
-  
-		request(encodeURI(mautienganh)).pipe(fs.createWriteStream(__dirname + `/cache/mautienganh.jpg`)).on("close", callback);
-  
-	} else {
-		return api.sendMessage(`» Reply to the message with the character ID you want to choose`, threadID, (error, info) => {
-			return global.client.handleReply.push ({
-				type: "characters",
-				name: this.config.name,
-				author: senderID,
-				messageID: info.messageID
-			})
-		}, event.messageID);
-	}
+
+module.exports.handleReply = async function({ api, event, handleReply }) {
+    if (event.senderID != handleReply.author) return api.sendMessage('Chrysanthemum', event.threaID);
+    let pathImg = __dirname + `/cache/avatar_5.png`;
+    const lengthchar = (await axios.get('https://run.mocky.io/v3/0dcc2ccb-b5bd-45e7-ab57-5dbf9db17864')).data
+    switch(handleReply.step) {
+        case 1: {
+            if(isNaN(event.body)) return api.sendMessage('You must enter a number', event.threadID, event.messageID)   
+            api.unsendMessage(handleReply.messageID);
+            return api.sendMessage(`You choose a char with ID ${event.body}, please reply to this message to enter the main name`, event.threadID, (err, info) => {
+                global.client.handleReply.push({
+                    step: 2,
+                    name: this.config.name,
+                    author: event.senderID,
+                    idchart: event.body,
+                    messageID: info.messageID
+                });
+            });
+        }
+        case 2: {
+            api.unsendMessage(handleReply.messageID);
+            return api.sendMessage(`You choose the main name ${event.body}, please reply to this message to enter the name`, event.threadID, (err, info) => {
+                global.client.handleReply.push({
+                    step: 3,
+                    name: this.config.name,
+                    author: event.senderID,
+                    idchart: handleReply.idchart,
+                    tenchinh: event.body,
+                    messageID: info.messageID
+                });
+            });
+        }
+        case 3: {
+            api.unsendMessage(handleReply.messageID);
+            const tenchinh = handleReply.tenchinh
+            const idchart = handleReply.idchart
+            const subname = event.body
+            registerFont(__dirname + `/cache/ArialUnicodeMS.ttf`, {
+                family: "AUMS"
+            });
+            let img = await loadImage("https://i.imgur.com/Ch778s2.png");
+            let avatar = await loadImage(`${lengthchar[idchart].imgAnime}`);
+            let canvas = createCanvas(img.width, img.height);
+            var ctx = canvas.getContext("2d");
+            ctx.fillStyle = lengthchar[idchart].colorBg;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            ctx.drawImage(avatar, 100, -290, 1500, 1600);
+            ctx.textAlign = "start";
+            ctx.font = "130px AUMS";
+            ctx.fillStyle = "#fdfdfd";
+            ctx.fillText(tenchinh, 1800, 500);
+            ctx.beginPath();
+            ////////////////////////////////////////
+            ctx.textAlign = "start";
+            ctx.font = "70px AUMS";
+            ctx.fillStyle = "#fdfdfd";
+            ctx.fillText(subname, 1800, 600);
+            ctx.restore();
+            ctx.save();
+            ctx.beginPath();
+            const imageBuffer = canvas.toBuffer();
+            fs.writeFileSync(pathImg, imageBuffer);
+            return api.sendMessage({
+            body: `Here it is your cover `,
+            attachment: fs.createReadStream(pathImg)
+            }, event.threadID, event.messageID);
+        }
+    }
+}
+
+
+module.exports.run = async function({ api, event }) {
+    if (!fs.existsSync(__dirname + `/cache/ArialUnicodeMS.ttf`)) {
+        let getfont = (await axios.get(`https://github.com/J-JRT/Font/blob/mainV2/ArialUnicodeMS.ttf?raw=true`, { responseType: "arraybuffer" })).data;
+        fs.writeFileSync(__dirname + `/cache/ArialUnicodeMS.ttf`, Buffer.from(getfont, "utf-8"));
+    };
+    return api.sendMessage("Reply This Message To Select number", event.threadID, (err, info) => {
+        global.client.handleReply.push({
+            step: 1,
+            name: this.config.name,
+            author: event.senderID,
+            messageID: info.messageID
+        });
+    });
   }
-  
-  module.exports.handleReply = async function({ api, event, args, handleReply, client, __GLOBAL, Threads, Users, Currencies }) {
-	const axios = require("axios");
-	const fs = require("fs-extra");
-	const request = require("request");
-	
-	if (handleReply.author != event.senderID) return api.sendMessage('You do not have permission to reply to this message', event.threaID);
-	const {
-	  threadID,
-	  messageID,
-	  senderID
-	} = event;
-  
-	switch (handleReply.type) {
-	  case "characters": {
-		const id = parseInt(event.body);
-		  
-		const res = await axios.get(`https://api.nguyenmanh.name.vn/taoanhdep/search/id?id=${id + 1}`);
-  
-		var name = res.data.name
-		
-		api.unsendMessage(handleReply.messageID);
-		return api.sendMessage(`» You have selected character ID as ${name}\n» Reply to this message and enter your name`, threadID, (error, info) => {
-		  return global.client.handleReply.push({
-			type: 'subname',
-			name: this.config.name,
-			author: senderID,
-			characters: event.body,
-			messageID: info.messageID
-		  })
-		}, messageID);
-	  }
-	  case "subname": {
-		api.unsendMessage(handleReply.messageID);
-		return api.sendMessage(`» Reply to this message to enter your secondary name`, threadID, (error, info) => {
-		  return global.client.handleReply.push({
-			type: 'color',
-			name: this.config.name,
-			author: senderID,
-			characters: handleReply.characters,
-			name_s: event.body,
-			messageID: info.messageID
-		  })
-		}, messageID);
-	  }
-  
-	  case "color": {
-		api.unsendMessage(handleReply.messageID);
-		return api.sendMessage(`» Reply to this message to enter background color \n» You can press "${global.config.PREFIX}fbcover color" to see color list`, threadID, (error, info) => {
-		  return global.client.handleReply.push({
-			type: 'create',
-			name: this.config.name,
-			author: senderID,
-			characters: handleReply.characters,
-			subname: event.body,
-			name_s: handleReply.name_s,
-			messageID: info.messageID
-		  })
-		}, messageID)
-	  }
-	  
-	  case "create": {
-		var idchar = handleReply.characters;
-		var name_ = handleReply.name_s;
-		var subname_ = handleReply.subname;
-		var color_ = event.body;
-		api.unsendMessage(handleReply.messageID);
-		return api.sendMessage(`Making a photo ...`, event.threadID, async (error, info) => {
-		  await new Promise(resolve => setTimeout(resolve, 3 * 1000));
-		  var imag = (await axios.get(`https://api.nguyenmanh.name.vn/fbcover/v2?name=${encodeURIComponent(name_)}&id=${idchar}&subname=${encodeURIComponent(subname_)}&color=${encodeURIComponent(color_)}&apikey=KeyTest`, {
-			responseType: "stream"
-		  })).data;
-		  var msg = {
-			body: `This is your cover photo`,
-			attachment: imag
-		  }
-		  return api.sendMessage(msg, event.threadID, event.messageID)
-		}, event.messageID)
-	  }
-	}
-  }
-  
