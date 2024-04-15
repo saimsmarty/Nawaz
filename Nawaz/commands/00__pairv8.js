@@ -1,5 +1,5 @@
 module.exports.config = {
-  name: "pair",
+  name: "pairv8",
   version: "1.0.0", 
   hasPermssion: 0,
   credits: "D-Jukie (Xuyên get)",
