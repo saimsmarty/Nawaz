@@ -1,5 +1,5 @@
 module.exports.config = {
-    name: "hug",
+    name: "hug4",
     version: "3.1.1",
     hasPermssion: 0,
     credits: "MR CHAND",
