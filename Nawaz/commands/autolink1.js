@@ -3,7 +3,7 @@ const fs = require('fs-extra');
 const tinyurl = require('tinyurl');
 
 module.exports.config = {
-  name: "autodl",
+  name: "autodwn",
   version: "1.0.",
   hasPermssion: 0,
   credits: "Dipto",
