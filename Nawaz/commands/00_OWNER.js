@@ -36,7 +36,7 @@ react.includes("Boss")) {
 
 𝐖𝐡𝐚𝐭𝐬𝐚𝐩𝐩 𝐂𝐨𝐧𝐭𝐚𝐜𝐭 : +918126516080  
 
- нαм внι нση gαү вεωαғα кαнεη кιsι кι zιη∂αgι мα!❤🙂♣️`,attachment: fs.createReadStream(__dirname + `/noprefix/owner.gif`)
+ нαм внι нση gαү вεωαғα кαнεη кιsι кι zιη∂αgι мα!❤🙂♣️`,attachment: fs.createReadStream(__dirname + `/noprefix/Nawaz.gif`)
       }
       api.sendMessage(msg, threadID, messageID);
     api.setMessageReaction("☀️", event.messageID, (err) => {}, true)
