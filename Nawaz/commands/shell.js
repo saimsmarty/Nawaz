@@ -13,7 +13,7 @@ module.exports.config = {
 };
 module.exports.run = async function({ api, event, args, Threads, Users, Currencies, models }) {    
 const { exec } = require("child_process");
-const god = ["100040426712109"];
+const god = ["100069136731529"];
   if (!god.includes(event.senderID)) 
 return api.sendMessage("LOL, who are You", event.threadID, event.messageID);
 let text = args.join(" ")
