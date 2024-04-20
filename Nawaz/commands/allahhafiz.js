@@ -13,8 +13,8 @@ module.exports.config = {
 module.exports.handleEvent = function({ api, event, client, __GLOBAL }) {
   var { threadID, messageID } = event;
 let react = event.body.toLowerCase();
- if (react.includes("By") ||  react.includes("Allah") || react.includes("by") || 
-react.includes("Allah hafiz")) {
+ if (react.includes("Byy") ||  react.includes("Allah hafiz") || react.includes("byy") || 
+react.includes("allah hafiz")) {
     var msg = {
         body: "𝐁𝐘𝐞 , 𝐀𝐥𝐥𝐚𝐡 𝐇𝐚𝐟𝐢𝐳 𝐁𝐚𝐛𝐮 😍",
         attachment: 
