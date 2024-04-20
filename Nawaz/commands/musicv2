@@ -41,7 +41,7 @@ module.exports.config = {
   prefix: true,
   usePrefix: true,
   commandCategory: "utility",
-  usages: "sing [your music title]",
+  usages: "play [your music title]",
   cooldowns: 5,
   dependencies: {
     "fs-extra": "",
