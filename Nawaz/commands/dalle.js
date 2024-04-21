@@ -22,7 +22,7 @@ module.exports.run = async function ({ api, event, args }) {
 const tl = [" cookies 1 ","cookies 2"];
 const cookies = tl[Math.floor(Math.random() * tl.length)];
       const w = await api.sendMessage("Wait koro baby < 😽", event.threadID);
-
+  
 const response = await axios.get(`https://noobs-api.onrender.com/dipto/dalle?prompt=${prompt}&key=dipto008&cookie=${cookies}`)
       const data = response.data.imgUrls;
       if (!data || data.length === 0) {
