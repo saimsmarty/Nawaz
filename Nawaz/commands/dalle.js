@@ -18,7 +18,7 @@ module.exports.run = async function ({ api, event, args }) {
    return api.sendMessage("❌| Wrong Formet .✅ | Use 17/18 years old boy/girl watching football match on tv and written Dipto and 69 on the back of his Dress , 4k",event.threadID,event.messageID);
   }
     try {
-      //const cookies = "cookies here (1_Fg-TrMeL-IazLtLnlN7gRK6YP5G-vt8-eE95ObVfdvnSlRrTS0WkXQ-u9Fc4PQStGw3xXAbCU1xjcyYtPLTU1iygT9knm-EEm6o6y-UoYvmX7y2aTv9PhG1aTS2PESbzkZae6WgVzuo6nKhlrevZ8lywT2zFtXcO7yt2aLnpWZ7gdE_fSKd6kV1mAsOUlIQ5mxIA6hp0RbhFRqplWgTok8Ttbyc-B-pBALVq9kLBvk)";
+      const cookies = "cookies here (1_Fg-TrMeL-IazLtLnlN7gRK6YP5G-vt8-eE95ObVfdvnSlRrTS0WkXQ-u9Fc4PQStGw3xXAbCU1xjcyYtPLTU1iygT9knm-EEm6o6y-UoYvmX7y2aTv9PhG1aTS2PESbzkZae6WgVzuo6nKhlrevZ8lywT2zFtXcO7yt2aLnpWZ7gdE_fSKd6kV1mAsOUlIQ5mxIA6hp0RbhFRqplWgTok8Ttbyc-B-pBALVq9kLBvk)";
 const tl = [" cookies 1 ","cookies 2"];
 const cookies = tl[Math.floor(Math.random() * tl.length)];
       const w = await api.sendMessage("Wait koro baby < 😽", event.threadID);
