@@ -1,54 +1,48 @@
 const axios = require('axios');
 const fs = require('fs-extra');
-const path = require('path');
-
-module.exports = {
-  config: {
-    name: "dalle3",
-    aliases: ["dalle","bing","create","imagine"],
+module.exports.config = {
+    name: "dalle",
     version: "1.0",
-    author: "Dipto",
-    countDown: 15,
-    role: 0,
-    shortDescription: "Generate images powerby by Dalle3",
-    longDescription: "Generate images by Unofficial Dalle3",
-    category: "download",
-    guide: {
-      en: "{pn} prompt"
-    }
-  },
+    credits: "dipto",
+    hasPermssion: 0,
+    usePrefix: true,
+    description: "Generate images by Dalle-3 AI",
+    commandCategory: "download",
+    usages: "[text] \nJamon [A 17/18/19 years old boy/girl watching football match on tv and written Dipto and 69 on the back of his Dress , 4k]",
+    cooldowns: 5
+  };
 
-  onStart: async function ({ api, event, args }) {
+module.exports.run = async function ({ api, event, args }) {
   const prompt = event.messageReply?.body.split("dalle")[1] ||  args.join(" ");
   if (!prompt) {
    return api.sendMessage("❌| Wrong Formet .✅ | Use 17/18 years old boy/girl watching football match on tv and written Dipto and 69 on the back of his Dress , 4k",event.threadID,event.messageID);
   }
     try {
-      const fff = ["1qcjPsH1ZG44xSjGOZkUPO3sC2WOtj_TI58b96ZpCCVbc2IQGaPsqn8ndvUq-yhAtVvQ4dKwWngPyiFBhp2bevKrxp3yxIBU1Z7HyZhhbEinU5Sq_tvnb7hM-R26lOslibFKP67ExRswq_Q397EeKJpTVaXHxmpk7iWDolNDddjroAff-qJnEj8QQZHdzgGoQLItHiGYPoRk0cx_6hpOJVw", "1MIMK8kV5ECz3Z5ZObGoNL44eXuOSyestyhjS8Cc5M89z5U1D3dva0jQ5byV_Jc_bXshpzzflA45eEeGTHOI3eZX0kuki__KS9GuSJf6lLJWTV6ImQJAAAOG7Ft4aLmRVOv1kuXZCdxtviIdFj6CuUdjj_kOfUrG5ep17sPgK-J9a_HEx6MNu5dbbR8GXcJSKO5YnkOnYXvfeD9HS7xJv6A"]
-      const col = fff[Math.floor(Math.random() * fff.length)]
+      //const cookies = "cookies here (_U value)";
+const tl = ["1_Fg-TrMeL-IazLtLnlN7gRK6YP5G-vt8-eE95ObVfdvnSlRrTS0WkXQ-u9Fc4PQStGw3xXAbCU1xjcyYtPLTU1iygT9knm-EEm6o6y-UoYvmX7y2aTv9PhG1aTS2PESbzkZae6WgVzuo6nKhlrevZ8lywT2zFtXcO7yt2aLnpWZ7gdE_fSKd6kV1mAsOUlIQ5mxIA6hp0RbhFRqplWgTok8Ttbyc-B-pBALVq9kLBvk","cookies 2"];
+const cookies = tl[Math.floor(Math.random() * tl.length)];
       const w = await api.sendMessage("Wait koro baby < 😽", event.threadID);
   
-const response = await axios.get(`${global.GoatBot.config.api}/dalle?prompt=${prompt}&key=dipto008&cookies=${col}`)
+const response = await axios.get(`https://noobs-api.onrender.com/dipto/dalle?prompt=${prompt}&key=dipto008&cookie=${cookies}`)
       const data = response.data.imgUrls;
       if (!data || data.length === 0) {
-        api.sendMessage("Empty response or no images generated.",event.threadID,event.messageID);
+        api.sendMessage("No images generated.",event.threadID,event.messageID);
       }
       const diptoo = [];
       for (let i = 0; i < data.length; i++) {
         const imgUrl = data[i];
         const imgResponse = await axios.get(imgUrl, { responseType: 'arraybuffer' });
-        const imgPath = path.join(__dirname, 'dvassests', `${i + 1}.jpg`);
+        const imgPath = __dirname + `/cache/${i + 1}.jpg`;
         await fs.outputFile(imgPath, imgResponse.data);
         diptoo.push(fs.createReadStream(imgPath));
       }
       await api.unsendMessage(w.messageID);
       await api.sendMessage({
-  body: `✅ | Here's Your Generated Photo<😘`,
+  body: `✅ |Naw Baby Tumar Generated Pic<😘`,
         attachment: diptoo
       },event.threadID, event.messageID);
     } catch (error) {
       console.error(error);
       await api.sendMessage(`Generation failed!\nError: ${error.message}`,event.threadID, event.messageID);
     }
-  }
-}
+  };
