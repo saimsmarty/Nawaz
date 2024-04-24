@@ -1,11 +1,11 @@
 module.exports.config = {
-	name: "pending",
-	version: "1.0.5",
-	credits: "Mirai Team",
-	hasPermssion: 2,
-	description: "Manage bot's waiting messages",
-	commandCategory: "system",
-	cooldowns: 5
+  name: "pending",
+  version: "1.0.5",
+  credits: "Mirai Team",
+  hasPermssion: 2,
+  description: "Quản lý tin nhắn chờ của bot",
+  commandCategory: "system",
+  cooldowns: 5
 };
 
 module.exports.languages = {
@@ -22,7 +22,7 @@ module.exports.languages = {
     "en": {
         "invaildNumber": "%1 is not an invalid number",
         "cancelSuccess": "Refused %1 thread!",
-        "notiBox": "Akiri BoT Connected Successfully!\nUse +help for more info :>",
+        "notiBox": "Your box has been approved to use bot",
         "approveSuccess": "Approved successfully %1 threads!",
 
         "cantGetPendingList": "Can't get the pending list!",
@@ -58,26 +58,48 @@ module.exports.handleReply = async function({ api, event, handleReply, getText }
 }
 
 module.exports.run = async function({ api, event, getText }) {
-	const { threadID, messageID } = event;
+  const { threadID, messageID } = event;
     const commandName = this.config.name;
     var msg = "", index = 1;
 
-    try {
-		var spam = await api.getThreadList(100, null, ["OTHER"]) || [];
-		var pending = await api.getThreadList(100, null, ["PENDING"]) || [];
-	} catch (e) { return api.sendMessage(getText("cantGetPendingList"), threadID, messageID) }
+  try {
+    var spam = await api.getThreadList(100, null, ["OTHER"]) || [];
+    var pending = await api.getThreadList(100, null, ["PENDING"]) || [];
+  } catch (e) {
+    return api.sendMessage("[ ERR ] Can't get the current list", threadID, messageID);
+  }
 
-	const list = [...spam, ...pending].filter(group => group.isSubscribed && group.isGroup);
+  const list = [...spam, ...pending].filter(group => group.isSubscribed && group.isGroup);
 
     for (const single of list) msg += `${index++}/ ${single.name}(${single.threadID})\n`;
 
-    if (list.length != 0) return api.sendMessage(getText("returnListPending", list.length, msg), threadID, (error, info) => {
-		global.client.handleReply.push({
+    if (list.length != 0) return api.sendMessage(`❯ Total number of groups to be approved: ${list.length} the group \n❯ Reply to the order number below to browse !!!\n${msg}`, threadID, (error, info) => {
+    global.client.handleReply.push({
             name: commandName,
             messageID: info.messageID,
             author: event.senderID,
             pending: list
         })
-	}, messageID);
+  }, messageID);
     else return api.sendMessage(getText("returnListClean"), threadID, messageID);
 }
+/*const list = [...spam, ...pending].filter(group => group.isSubscribed && group.isGroup);
+
+  for (const single of list) {
+    const threadName = single.name || "Unknown";
+    msg += `${index++}/ ${threadName}(${single.threadID})\n`;
+  }
+
+  if (list.length !== 0) {
+    return api.sendMessage(`❯ Total number of groups to be approved: ${list.length} the group \n❯ Reply to the order number below to browse !!!\n${msg}`, threadID, (error, info) => {
+      global.GoatBot.onReply.set(info.messageID, {
+        commandName,
+        messageID: info.messageID,
+        author: event.senderID,
+        pending: list
+      });
+    }, messageID);
+  } else {
+    return api.sendMessage("[ - ] There are currently no groups in the queue", threadID, messageID);
+  }
+}*/
