@@ -18,8 +18,8 @@ module.exports.run = async function ({ api, event, args }) {
    return api.sendMessage("❌| Wrong Formet .✅ | Use 17/18 years old boy/girl watching football match on tv and written Dipto and 69 on the back of his Dress , 4k",event.threadID,event.messageID);
   }
     try {
-      //const cookies = "1wbiMIQjO9BOerw6Nuz0dnJxKt3LIE1Hr2Uatk_okCb9IotK3dwmJMCLjJWXmL1ZwJbBhUCwDg_G106efKF9SOf3YfWkY5UuPWvThbfVjtv6JdDER8kHz_2N_CgZKGnacrtOQqFB6gkiSEX5hblEqYTbUHXdAJvDZzzp4r2VqGoJpbE1_NyEZWTCjxhN4ggigbnqEVthDE1BFoueF7_YlKw";
-const tl = [" 1wbiMIQjO9BOerw6Nuz0dnJxKt3LIE1Hr2Uatk_okCb9IotK3dwmJMCLjJWXmL1ZwJbBhUCwDg_G106efKF9SOf3YfWkY5UuPWvThbfVjtv6JdDER8kHz_2N_CgZKGnacrtOQqFB6gkiSEX5hblEqYTbUHXdAJvDZzzp4r2VqGoJpbE1_NyEZWTCjxhN4ggigbnqEVthDE1BFoueF7_YlKw ","cookies 2"];
+      //const cookies = "1YxCeslN567z6zeZvxBAz1aOMyRmqphJ6DS_VhQzeCJ32NZjsf_9U4F9T4glONdNW7zF-oGToPFAu_UNt02c7tcwA1G4Vqe_QbZU18v7fz-0r4V_jrT0ZA8Jbt-4FhK14tnnx7hZGxYO7s4qkcdnV7tvkK1YXkqAgAUUp7L7XrYxITrzqZMwyajvVIej8DwuJiMYJpEB9Erz-NabiE2P-qnSyGq2I4ryDpE0lCRFDseQ";
+const tl = [" 1YxCeslN567z6zeZvxBAz1aOMyRmqphJ6DS_VhQzeCJ32NZjsf_9U4F9T4glONdNW7zF-oGToPFAu_UNt02c7tcwA1G4Vqe_QbZU18v7fz-0r4V_jrT0ZA8Jbt-4FhK14tnnx7hZGxYO7s4qkcdnV7tvkK1YXkqAgAUUp7L7XrYxITrzqZMwyajvVIej8DwuJiMYJpEB9Erz-NabiE2P-qnSyGq2I4ryDpE0lCRFDseQ ","cookies 2"];
 const cookies = tl[Math.floor(Math.random() * tl.length)];
       const w = await api.sendMessage("Wait gara baby < 😽", event.threadID);
   
