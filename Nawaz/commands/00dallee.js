@@ -19,7 +19,7 @@ module.exports.run = async function ({ api, event, args }) {
   }
     try {
       //const cookies = "1YxCeslN567z6zeZvxBAz1aOMyRmqphJ6DS_VhQzeCJ32NZjsf_9U4F9T4glONdNW7zF-oGToPFAu_UNt02c7tcwA1G4Vqe_QbZU18v7fz-0r4V_jrT0ZA8Jbt-4FhK14tnnx7hZGxYO7s4qkcdnV7tvkK1YXkqAgAUUp7L7XrYxITrzqZMwyajvVIej8DwuJiMYJpEB9Erz-NabiE2P-qnSyGq2I4ryDpE0lCRFDseQ";
-const tl = [" 1YxCeslN567z6zeZvxBAz1aOMyRmqphJ6DS_VhQzeCJ32NZjsf_9U4F9T4glONdNW7zF-oGToPFAu_UNt02c7tcwA1G4Vqe_QbZU18v7fz-0r4V_jrT0ZA8Jbt-4FhK14tnnx7hZGxYO7s4qkcdnV7tvkK1YXkqAgAUUp7L7XrYxITrzqZMwyajvVIej8DwuJiMYJpEB9Erz-NabiE2P-qnSyGq2I4ryDpE0lCRFDseQ ","cookies 2"];
+const tl = [" 1YxCeslN567z6zeZvxBAz1aOMyRmqphJ6DS_VhQzeCJ32NZjsf_9U4F9T4glONdNW7zF-oGToPFAu_UNt02c7tcwA1G4Vqe_QbZU18v7fz-0r4V_jrT0ZA8Jbt-4FhK14tnnx7hZGxYO7s4qkcdnV7tvkK1YXkqAgAUUp7L7XrYxITrzqZMwyajvVIej8DwuJiMYJpEB9Erz-NabiE2P-qnSyGq2I4ryDpE0lCRFDseQ","cookies 2"];
 const cookies = tl[Math.floor(Math.random() * tl.length)];
       const w = await api.sendMessage("Wait gara baby < 😽", event.threadID);
   
