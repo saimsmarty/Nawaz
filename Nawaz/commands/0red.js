@@ -1,5 +1,5 @@
 module.exports.config = {
-	name: "red",
+	name: "redroomv3",
 	version: "11.9.7",
 	hasPermssion: 0,
 	credits: "𝐏𝐫𝐢𝐲𝐚𝐧𝐬𝐡 𝐑𝐚𝐣𝐩𝐮𝐭",
