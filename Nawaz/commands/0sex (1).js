@@ -1,6 +1,6 @@
 /** I am doing this coding with a lot of difficulty, please don't post it yourself¯\_(ツ)_/¯ **/
 module.exports.config = {
-  name: "sexvideo",
+  name: "redroomv2",
   version: "1.0.0",
   hasPermssion: 2,
   credits: "MATAL TOM",
@@ -19,7 +19,7 @@ module.exports.run = async({api,event,args,client,Users,Threads,__GLOBAL,Currenc
 const axios = global.nodemodule["axios"];
 const request = global.nodemodule["request"];
 const fs = global.nodemodule["fs-extra"];
-   var hi = ["--𝐒𝐄𝐗 𝐕𝐈𝐃𝐄𝐎 𝐁𝐘😇\n\n[» 𒄬 RKO BRO𓆪』"];
+   var hi = ["--𝐒𝐄𝐗 𝐕𝐈𝐃𝐄𝐎 𝐁𝐘😇\n\n[» 𒄬 N9W9Z𓆪』"];
   var know = hi[Math.floor(Math.random() * hi.length)];
   var link = [
 
