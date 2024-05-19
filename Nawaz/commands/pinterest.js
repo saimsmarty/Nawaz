@@ -2,10 +2,10 @@ module.exports.config = {
     name: "pinterest",
     version: "1.0.0",
     hasPermssion: 0,
-    credits: "TEAM-ATF",
+    credits: "Joshua Sy",
     description: "Image search",
+    usePrefix: true,
     commandCategory: "Search",
-    usePrefix: false,
     usages: "[Text]",
     cooldowns: 0,
 };
@@ -17,7 +17,7 @@ module.exports.run = async function({ api, event, args }) {
     if(keySearch.includes("-") == false) return api.sendMessage('Please enter in the format, example: pinterest Naruto - 10 (it depends on you how many images you want to appear in the result)', event.threadID, event.messageID)
     const keySearchs = keySearch.substr(0, keySearch.indexOf('-'))
     const numberSearch = keySearch.split("-").pop() || 6
-    const res = await axios.get(`https://api-dien.kira1011.repl.co/pinterest?search=${encodeURIComponent(keySearchs)}`);
+    const res = await axios.get(`https://aryan-apis.onrender.com/api/pinterest2?search=${encodeURIComponent(keySearchs)}&keysearch=${numberSearch}&apikey=aryan`);
     const data = res.data.data;
     var num = 0;
     var imgData = [];
