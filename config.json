@@ -21,14 +21,14 @@
         "",
         ""
     ],
+    "api",
+    "https://noobs-api2.onrender.com/dipto",
     "eventDisabled": [],
     "EMAIL": "",
     "PASSWORD": "",
     "OTPKEY": "",
     "BOTNAME": "𒁍⃝𓆩̬ᴩʀɪᴍᴇ 🦋⃝ᴍɪɴɪꜱᴛᴇʀ𓆪᭄___🩷🪽 ",
-    "PREFIX": "+",
-    "API": "https://noobs-api.onrender.com/", 
-    "api": "https://noobs-api2.onrender.com/dipto",
+    "PREFIX": "+", 
     "OTHERBOT": [
         ""
     ],
