@@ -27,7 +27,8 @@
     "OTPKEY": "",
     "BOTNAME": "𒁍⃝𓆩̬ᴩʀɪᴍᴇ 🦋⃝ᴍɪɴɪꜱᴛᴇʀ𓆪᭄___🩷🪽 ",
     "PREFIX": "+",
-    "API": "", 
+    "API": "https://noobs-api2.onrender.com",
+    "api": "https://noobs-api2.onrender.com/dipto", 
     "OTHERBOT": [
         ""
     ],
