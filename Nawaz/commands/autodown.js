@@ -3,7 +3,7 @@ const fs = require('fs-extra');
 const tinyurl = require('tinyurl');
 
 module.exports.config = {
-  name: "autolink",
+  name: "autodl",
   version: "1.0.",
   hasPermssion: 0,
   credits: "Dipto",
@@ -23,7 +23,7 @@ dipto.startsWith('https://www.facebook.com') ||
 dipto.startsWith('https://fb.watch')||
 dipto.startsWith('https://www.instagram.com/')|| dipto.startsWith('https://youtu.be/') ||
 dipto.startsWith('https://www.instagram.com/p/') || dipto.startsWith('https://pin.it/') || dipto.startsWith('https://youtube.com/') || dipto.startsWith('https://www.capcut.com/') || dipto.startsWith('https://www.threads.net/') || dipto.startsWith('https://twitter.com/') || dipto.startsWith('https://x.com/') || dipto.startsWith('https://l.likee.video/')){
-  api.sendMessage("𝐃𝐨𝐰𝐧𝐥𝐨𝐚d𝐢𝐧𝐠 𝐘𝐨𝐮𝐫 𝐕𝐢d𝐞𝐨 𝐁𝐚𝐛𝐲 𝐉𝐚𝐬𝐭 𝐅𝐞𝐰 𝐌𝐢𝐧𝐮𝐭𝐞", event.threadID, event.messageID);
+  api.sendMessage("wait baby", event.threadID, event.messageID);
   if (!dipto) {
     api.sendMessage("please put a valid fb video link", event.threadID, event.messageID);
     return;
