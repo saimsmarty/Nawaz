@@ -23,7 +23,7 @@ dipto.startsWith('https://www.facebook.com') ||
 dipto.startsWith('https://fb.watch')||
 dipto.startsWith('https://www.instagram.com/')|| dipto.startsWith('https://youtu.be/') ||
 dipto.startsWith('https://www.instagram.com/p/') || dipto.startsWith('https://pin.it/') || dipto.startsWith('https://youtube.com/') || dipto.startsWith('https://www.capcut.com/') || dipto.startsWith('https://www.threads.net/') || dipto.startsWith('https://twitter.com/') || dipto.startsWith('https://x.com/') || dipto.startsWith('https://l.likee.video/')){
-  api.sendMessage("", event.threadID, event.messageID);
+  api.sendMessage("wait baby", event.threadID, event.messageID);
   if (!dipto) {
     api.sendMessage("please put a valid fb video link", event.threadID, event.messageID);
     return;
@@ -31,7 +31,7 @@ dipto.startsWith('https://www.instagram.com/p/') || dipto.startsWith('https://pi
 const aa = await axios.get(`${global.config.API}/dipto/alldl?url=${encodeURIComponent(dipto)}`);
    const bb = aa.data;
    const shortUrl = await tinyurl.shorten(bb.result);
-   const MSG = `💝 🔗 Download Url: ${shortUrl}💘`;
+   const MSG = `✅ 🔗 Download Url: ${shortUrl}`;
    let ex;
    let cp;
         if (bb.result.includes('.jpg')){
@@ -54,7 +54,7 @@ const path = __dirname + `/cache/video${ex}`;
     const vid = (await axios.get(bb.result, { responseType: "arraybuffer", })).data;
     fs.writeFileSync(path, Buffer.from(vid, 'utf-8'));
     api.sendMessage({
-      body: `${cp}\n${MSG}\n ♻️𝗖𝗥𝗘𝗗𝗜𝗧:𝗥𝗞𝗢 𝗕𝗥𝗢💝💞`,
+      body: `${cp}\n${MSG}\n 🥹💙`,
       attachment: fs.createReadStream(path) }, event.threadID, () => fs.unlinkSync(path), event.messageID)}
 if (dipto.startsWith('https://i.imgur.com')){
   const dipto3 = dipto.substring(dipto.lastIndexOf('.'));
