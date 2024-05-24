@@ -4,7 +4,7 @@ const fs = require("fs-extra");
 const tempy = require('tempy');
 
 module.exports.config = {
-    name: "instadown",
+    name: "igautodownload",
     version: "1.0.0",
     hasPermssion: 0,
     credits: "Priyansh Rajput",
