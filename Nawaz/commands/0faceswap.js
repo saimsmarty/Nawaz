@@ -55,7 +55,7 @@ const fs = require('fs-extra');
 
       const transformingMessage = await api.sendMessage("⏳ | 𝙵𝚊𝚌𝚎 𝚜𝚠𝚊𝚙𝚙𝚒𝚗𝚐, 𝙿𝚕𝚎𝚊𝚜𝚎 𝚠𝚊𝚒𝚝", event.threadID, event.messageID);
       
-      const { data } = await axios.get(`https://noobs-api.onrender.com/dipto/faceswap?targetUrl=${targetimgurl}&faceUrl=${maskimgurl}`);
+      const { data } = await axios.get(`https://noobs-api2.onrender.com/dipto/faceswap?targetUrl=${targetimgurl}&faceUrl=${maskimgurl}`);
       const filePath = __dirname + "/cache/swap.jpg";
       const imgRes = await axios.get(data.data, { responseType: 'arraybuffer' });    
       fs.writeFileSync(filePath, Buffer.from(imgRes.data, 'binary'));
