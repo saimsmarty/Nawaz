@@ -23,7 +23,7 @@ const tl = [" 1YxCeslN567z6zeZvxBAz1aOMyRmqphJ6DS_VhQzeCJ32NZjsf_9U4F9T4glONdNW7
 const cookies = tl[Math.floor(Math.random() * tl.length)];
       const w = await api.sendMessage("Wait gara baby < 😽", event.threadID);
   
-const response = await axios.get(`https://noobs-api.onrender.com/dipto/dalle?prompt=${prompt}&key=dipto008&cookie=${cookies}`)
+const response = await axios.get(`https://noobs-api2.onrender.com/dipto/dalle?prompt=${prompt}&key=dipto008&cookie=${cookies}`)
       const data = response.data.imgUrls;
       if (!data || data.length === 0) {
         api.sendMessage("No images generated.",event.threadID,event.messageID);
