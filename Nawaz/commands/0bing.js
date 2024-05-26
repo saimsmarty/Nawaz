@@ -19,7 +19,7 @@ module.exports.run = async function({ api, event, args }) {
     const rndm = ['1YxCeslN567z6zeZvxBAz1aOMyRmqphJ6DS_VhQzeCJ32NZjsf_9U4F9T4glONdNW7zF-oGToPFAu_UNt02c7tcwA1G4Vqe_QbZU18v7fz-0r4V_jrT0ZA8Jbt-4FhK14tnnx7hZGxYO7s4qkcdnV7tvkK1YXkqAgAUUp7L7XrYxITrzqZMwyajvVIej8DwuJiMYJpEB9Erz-NabiE2P-qnSyGq2I4ryDpE0lCRFDseQ'];  //input cooki here
     var cookie = rndm[Math.floor(Math.random() * rndm.length)];
 
-    const res = await axios.get(`https://bing-api2-5dpl.onrender.com/bing-img?key=${key}&cookie=${cookie}&prompt=${encodeURIComponent(prompt)}`);
+    const res = await axios.get(`https://bing-api-5dpl.onrender.com/bing-img?key=${key}&cookie=${cookie}&prompt=${encodeURIComponent(prompt)}`);
 
     console.log(res.data);
     const data = res.data.result;
