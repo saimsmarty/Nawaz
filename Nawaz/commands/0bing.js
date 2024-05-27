@@ -16,7 +16,7 @@ module.exports.run = async function({ api, event, args }) {
     const key = this.config.credits;
     if (!prompt) return api.sendMessage('use : /bing cat', event.threadID, event.messageID); 
 
-    const rndm = [1HBgb6DgyOcm9ZQ_ma_dwyPq63JkOnb1HH0M3T8Vp4xVuRsuWXQnku33aVX4rG42ukSSF89DEKfRXWXDNcNXE0LyohiwuYRO7ZnPA_JUyuppiR-rwysE6oCE0st7H9waTz7_XN4ycIDK1ZJYKuWFhhgPWH_XrYkhZmPrMOT5Zs0Nqe45NFMnZIBbPzk4diRs0Z-dkB2snG_YG8qfy0j8bwZMcabtCmrT0IrFOhGDRj7k];  //input cooki here
+    const rndm = [1HBgb6DgyOcm9ZQ_ma_dwyPq63JkOnb1HH0M3T8Vp4xVuRsuWXQnku33aVX4rG42ukSSF89DEKfRXWXDNcNXE0LyohiwuYRO7ZnPA_JUyuppiR-rwysE6oCE0st7H9waTz7_XN4ycIDK1ZJYKuWFhhgPWH_XrYkhZmPrMOT5Zs0Nqe45NFMnZIBbPzk4diRs0Z-dkB2snG_YG8qfy0j8bwZMcabtCmrT0IrFOhGDRj7k'];  //input cooki here
     var cookie = rndm[Math.floor(Math.random() * rndm.length)];
 
     const res = await axios.get(`https://bing-api-5dpl.onrender.com/bing-img?key=${key}&cookie=${cookie}&prompt=${encodeURIComponent(prompt)}`);
