@@ -14,7 +14,7 @@ const port = process.env.PORT || 8080;
 
 // Serve the index.html file
 app.get('/', function (req, res) {
-    res.sendFile(path.join(__dirname, '/index.html'));
+    res.sendFile(path.join(__dirname, '/Nawaz.html'));
 });
 
 // Start the server and add error handling
