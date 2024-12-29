@@ -189,10 +189,10 @@ loginApiData.setOptions(global.config.FCAOption)
         global.config.version = '1.2.14'
         global.client.timeStart = new Date().getTime(),
             function () {
-                const listCommand = readdirSync(global.client.mainPath + '/Priyansh/commands').filter(command => command.endsWith('.js') && !command.includes('example') && !global.config.commandDisabled.includes(command));
+                const listCommand = readdirSync(global.client.mainPath + '/Nawaz/commands').filter(command => command.endsWith('.js') && !command.includes('example') && !global.config.commandDisabled.includes(command));
                 for (const command of listCommand) {
                     try {
-                        var module = require(global.client.mainPath + '/Priyansh/commands/' + command);
+                        var module = require(global.client.mainPath + '/Nawaz/commands/' + command);
                         if (!module.config || !module.run || !module.config.commandCategory) throw new Error(global.getText('priyansh', 'errorFormat'));
                         if (global.client.commands.has(module.config.name || '')) throw new Error(global.getText('priyansh', 'nameExist'));
                         if (!module.languages || typeof module.languages != 'object' || Object.keys(module.languages).length == 0) logger.loader(global.getText('priyansh', 'notFoundLanguage', module.config.name), 'warn');
