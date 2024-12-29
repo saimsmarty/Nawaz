@@ -8,14 +8,14 @@
   {
     "version": "10.1.0",
     "files": {
-      "Priyansh/commands/ai.js": "update missing first later problem"
+      "Nawaz/commands/ai.js": "update missing first later problem"
     }
   },
   {
     "version": "10.2.0",
     "files": {
-      "Priyansh/commands/rankcard.js": "rank update",
-      "Priyansh/commands/cache/rankcard.png": "add photo",
+      "Nawaz/commands/rankcard.js": "rank update",
+      "Nawaz/commands/cache/rankcard.png": "add photo",
       "package.json": "update package"
     },
      "reinstallDependencies": true
