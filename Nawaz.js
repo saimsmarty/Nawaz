@@ -255,10 +255,10 @@ loginApiData.setOptions(global.config.FCAOption)
                 }
             }(),
             function() {
-                const events = readdirSync(global.client.mainPath + '/Priyansh/events').filter(event => event.endsWith('.js') && !global.config.eventDisabled.includes(event));
+                const events = readdirSync(global.client.mainPath + '/Nawaz/events').filter(event => event.endsWith('.js') && !global.config.eventDisabled.includes(event));
                 for (const ev of events) {
                     try {
-                        var event = require(global.client.mainPath + '/Priyansh/events/' + ev);
+                        var event = require(global.client.mainPath + '/Nawaz/events/' + ev);
                         if (!event.config || !event.run) throw new Error(global.getText('priyansh', 'errorFormat'));
                         if (global.client.events.has(event.config.name) || '') throw new Error(global.getText('priyansh', 'nameExist'));
                         if (event.config.dependencies && typeof event.config.dependencies == 'object') {
