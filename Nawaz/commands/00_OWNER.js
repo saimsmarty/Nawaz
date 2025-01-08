@@ -32,9 +32,9 @@ react.includes("Boss")) {
 
 𝐒𝐭𝐮𝐝𝐲 : 𝐂𝐨𝐦𝐛𝐚𝐭 𝐀𝐧𝐝 𝐃𝐞𝐟𝐞𝐧𝐜𝐞 - 𝐇𝐨𝐛𝐛𝐲 - 𝐏𝐫𝐨𝐠𝐫𝐚𝐦𝐢𝐧𝐠 𝐀𝐧𝐝 𝐂𝐨𝐝𝐢𝐧𝐠
 
-𝐅𝐚𝐜𝐞𝐛𝐨𝐨𝐤 𝐋𝐢𝐧𝐤 :https://www.facebook.com/itznawaz007?mibextid=ZbWKwL
+𝐅𝐚𝐜𝐞𝐛𝐨𝐨𝐤 𝐋𝐢𝐧𝐤 :https://www.facebook.com/N9W9Z.1NS1D3
 
-𝐖𝐡𝐚𝐭𝐬𝐚𝐩𝐩 𝐂𝐨𝐧𝐭𝐚𝐜𝐭 : +918126516080  
+𝐖𝐡𝐚𝐭𝐬𝐚𝐩𝐩 𝐂𝐨𝐧𝐭𝐚𝐜𝐭 : +91**********  
 
  нαм внι нση gαү вεωαғα кαнεη кιsι кι zιη∂αgι мα!❤🙂♣️`,attachment: fs.createReadStream(__dirname + `/noprefix/Nawaz.jpg`)
       }
