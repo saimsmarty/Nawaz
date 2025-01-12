@@ -4,8 +4,8 @@ module.exports.config = {
   hasPermssion: 0,
   credits: "SHANKAR SUMAN",
   description: "GIRL STATUS VEDIO",
-  commandCategory: "GIRL STATUS VIDEO",
-  usages: "Status video",
+  commandCategory: "Noprefix",
+  usages: "Girl video",
   cooldowns: 5,
   dependencies: {
     "request":"",
