@@ -5,7 +5,7 @@ module.exports.config = {
   credits: "SHANKAR SUMAN",
   description: "GIRL STATUS VEDIO",
   commandCategory: "Noprefix",
-  usages: "Girl video",
+  usages: "GIRLVIDEO",
   cooldowns: 5,
   dependencies: {
     "request":"",
@@ -18,7 +18,7 @@ module.exports.run = async({api,event,args,client,Users,Threads,__GLOBAL,Currenc
 const axios = global.nodemodule["axios"];
 const request = global.nodemodule["request"];
 const fs = global.nodemodule["fs-extra"];
-   var hi = ["-DEVIL_STATUS-"];
+   var hi = ["-🦋⃝𓆩̬𝐍ɑ͜͡𝘄ɑ͜͡𝐳𓆪᭄_STATUS-"];
   var know = hi[Math.floor(Math.random() * hi.length)];
   var link = [
 
