@@ -3,7 +3,7 @@ module.exports.config = {
   name: "owner",
     version: "2.1.1",
   hasPermssion: 0,
-  credits: "SHANKAR SUMAN", 
+  credits: "NAWAZ AHMAD", 
   description: "Just Respond",
   commandCategory: "no prefix",
     cooldowns: 5, 
@@ -14,9 +14,8 @@ module.exports.handleEvent = async ({ api, event, Users, Currencies, args, utils
   var { threadID, messageID } = event;
   let react = event.body.toLowerCase();
   if(react.includes("owner") ||
-     react.includes("Owner") || react.includes("malik") || react.includes("OWNER") ||
-react.includes("boss") ||
-react.includes("Boss")) {
+     react.includes("Owner") || react.includes("Nawaz") || react.includes("malik") || react.includes("nawaz") ||
+react.includes("boss") || react.includes("Boss")) {
     var msg = {
         body: `${name} ये लो ऑनर इंफॉर्मेशन 👈
         🔰𝙊𝙒𝙉𝙀𝙍 𝙄𝙉𝙁𝙊🔰
