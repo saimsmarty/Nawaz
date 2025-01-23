@@ -1,26 +1,89 @@
+const axios = require("axios");
+const fs = require("fs-extra");
+const path = require("path");
+
 module.exports.config = {
-	name: "github",
-	version: "1.0.0",
-	hasPermssion: 0,
-	credits: "Mr Chand",
-	description: "find github info",
-  usages: "[github name]",
-	commandCategory: "...",
-	cooldowns: 1
+  name: "Wallpaper",
+  version: "1.0.0",
+  hasPermission: 0,
+  credits: "NAWAZ AHMAD",
+  description: "Get random wallpapers based on a search query",
+  usages: "/wallpaper [query]",
+  commandCategory: "Images",
+  cooldowns: 5
 };
 
-module.exports.run = async ({ api, event,args }) => {
-const axios = global.nodemodule["axios"];
-let juswa = args.join(" ");
-const res = await axios.get(`https://api.popcat.xyz/github/${juswa}`);
-var name = res.data.name;
-var location = res.data.location;
-var email = res.data.email;
-var twitter = res.data.twitter;
-var followers = res.data.followers;
-var following = res.data.following;
-var created = res.data.created_at;
-var bio = res.data.bio;
-var url = res.data.url;
-return api.sendMessage(`Name: ${name}\nUrl: ${url}\nBio: ${bio}\nLocation: ${location}\nEmail: ${email}\nTwitter: ${twitter}\nFollowers: ${followers}\nFollowing: ${following}`, event.threadID, event.messageID)
-}
+module.exports.run = async ({ api, event, args }) => {
+  if (args.length === 0) {
+    api.sendMessage("Please provide a query to search for images.", event.threadID, event.messageID);
+    return;
+  }
+
+  const apiKey = "39178311-acadeb32d7e369897e41dba06";
+  const query = encodeURIComponent(args.join(" "));
+  const apiUrl = `https://pixabay.com/api/?key=${apiKey}&q=${query}&image_type=photo&per_page=200`;
+
+  try {
+    const response = await axios.get(apiUrl);
+    const wallpapers = response.data.hits.filter(wallpaper => {
+      const imageUrl = wallpaper.largeImageURL;
+      const imageExtension = path.extname(imageUrl);
+      return imageExtension === ".jpg" || imageExtension === ".png";
+    });
+
+    if (wallpapers.length === 0) {
+      api.sendMessage("No wallpapers found for the given query.", event.threadID, event.messageID);
+      return;
+    }
+
+    let streams = [];
+    let counter = 0;
+
+    for (const wallpaper of wallpapers) {
+      if (counter >= 10) {
+        break;
+      }
+
+      const imageUrl = wallpaper.largeImageURL;
+      const imageExtension = path.extname(imageUrl);
+
+      let imagePath = path.join(__dirname, `/cache/wallpaper${counter}${imageExtension}`);
+      let hasError = false;
+
+      try {
+        const imageResponse = await axios.get(imageUrl, { responseType: "arraybuffer" });
+        fs.writeFileSync(imagePath, Buffer.from(imageResponse.data, "binary"));
+      } catch (error) {
+        console.error(error);
+        hasError = true;
+      }
+
+      if (!hasError) {
+        streams.push(fs.createReadStream(imagePath).on("end", () => {
+          if (fs.existsSync(imagePath)) {
+            fs.unlink(imagePath, err => {
+              if (err) console.error(err);
+            });
+          }
+        }));
+
+        counter += 1;
+      }
+    }
+
+    if (streams.length > 0) {
+      let msg = {
+        body: `❥━━━━❥[ 😀 ]❥━━━━❥\n\n𒁍 ये लो बाबू फोटो 😛 𒁍\n\n❥━━━━❥[ 😈 ]❥━━━━❥`,
+        attachment: streams
+      };
+
+      api.sendMessage(msg, event.threadID, event.messageID);
+    } else {
+      api.sendMessage("An error occurred while fetching the wallpapers.", event.threadID, event.messageID);
+    }
+
+  } catch (error) {
+    console.error(error);
+    api.sendMessage("An error occurred while fetching wallpapers.", event.threadID, event.messageID);
+  }
+};
