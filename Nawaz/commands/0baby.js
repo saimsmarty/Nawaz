@@ -4,7 +4,7 @@ module.exports.config = {
   name: "hercai",
   version: "1.3.0",
   hasPermission: 0,
-  credits: "om no chngx",
+  credits: "NAWAZ AHMAD",
   description: "Hercai bot with memory and context-aware conversation.",
   commandCategory: "AI",
   usages: "[your question]",
@@ -137,4 +137,9 @@ module.exports.run = async function ({ api, event, args }) {
   } catch (error) {
     console.error("API Error:", error.response ? error.response.data : error.message);
     return api.sendMessage(
-      "❌ API से जव
+      "❌ API से जवाब लाने में समस्या हुई। कृपया बाद में प्रयास करें।",
+      threadID,
+      messageID
+    );
+  }
+};
