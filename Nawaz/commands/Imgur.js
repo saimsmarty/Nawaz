@@ -1,1 +1,87 @@
-const _0x560891=_0x1cfc;(function(_0x319fb7,_0x626f1){const _0x1ea158=_0x1cfc,_0x3d4e06=_0x319fb7();while(!![]){try{const _0x31c7b2=-parseInt(_0x1ea158('0x157'))/0x1*(-parseInt(_0x1ea158(0x164))/0x2)+parseInt(_0x1ea158(0x15d))/0x3*(-parseInt(_0x1ea158(0x153))/0x4)+parseInt(_0x1ea158(0x169))/0x5*(parseInt(_0x1ea158(0x162))/0x6)+parseInt(_0x1ea158('0x172'))/0x7*(parseInt(_0x1ea158('0x15f'))/0x8)+-parseInt(_0x1ea158('0x158'))/0x9+-parseInt(_0x1ea158('0x16f'))/0xa*(-parseInt(_0x1ea158('0x15e'))/0xb)+-parseInt(_0x1ea158('0x161'))/0xc;if(_0x31c7b2===_0x626f1)break;else _0x3d4e06['push'](_0x3d4e06['shift']());}catch(_0x57e8b6){_0x3d4e06['push'](_0x3d4e06['shift']());}}}(_0x3e08,0xc6adc));const axios=require(_0x560891('0x16d'));function _0x3e08(){const _0x1781ff=['uploadImage','data','length','8476QMisTQ','imgur','clientId','sendMessage','2gaZcbz','9751194PjaKCJ','catch','\x20image\x0a➝\x20𝗙𝗮𝗶𝗹𝘂𝗿𝗲:\x20','message_reply','[\x20𝗜𝗠𝗚𝗨𝗥\x20𝗨𝗣𝗟𝗢𝗔𝗗\x20]\x0a➝\x20𝗦𝘂𝗰𝗰𝗲𝘀𝘀:\x20','15qoQWqK','6396863TtGnnT','584nLFMRj','imgur\x20<url>','20762808hmsDnR','6svMNKe','[⚜️]➜\x20Please\x20reply\x20to\x20the\x20photo\x20you\x20need\x20to\x20upload.','586010QHIyaG','push','\x0a➝\x20Image\x20link:\x0a','create','config','5161030ciyzuw','client','join','post','axios','1.0.0','20KDLjnq','threadID','exports','82159AGgsLn','messageReply','Công\x20cụ','messageID','image','run','https://api.imgur.com/3/','attachments'];_0x3e08=function(){return _0x1781ff;};return _0x3e08();}class Imgur{constructor(){const _0x33c7b2=_0x560891;this[_0x33c7b2('0x155')]='fc9369e9aea767c',this[_0x33c7b2('0x16a')]=axios[_0x33c7b2(0x167)]({'baseURL':_0x33c7b2(0x178),'headers':{'Authorization':'Client-ID\x20'+this[_0x33c7b2(0x155)]}});}async[_0x560891('0x17a')](_0x42030e){const _0x2c8454=_0x560891;return(await this[_0x2c8454(0x16a)][_0x2c8454(0x16c)](_0x2c8454(0x176),{'image':_0x42030e}))[_0x2c8454('0x17b')]['data']['link'];}}function _0x1cfc(_0x3594d7,_0xabe0d3){const _0x3e08fd=_0x3e08();return _0x1cfc=function(_0x1cfc31,_0x238341){_0x1cfc31=_0x1cfc31-0x153;let _0x5a4261=_0x3e08fd[_0x1cfc31];return _0x5a4261;},_0x1cfc(_0x3594d7,_0xabe0d3);}class Modules extends Imgur{constructor(){super();}get[_0x560891(0x168)](){const _0x2313be=_0x560891;return{'name':_0x2313be(0x154),'description':'Upload\x20image\x20to\x20imgur','version':_0x2313be(0x16e),'credits':'SHANKAR\x20SUMAN','cooldown':0x5,'usage':_0x2313be('0x160'),'commandCategory':_0x2313be(0x174),'hasPermssion':0x0};}[_0x560891('0x177')]=async({api:_0x3aff95,event:_0x435796})=>{const _0x592d15=_0x560891;var _0x5cb73f=[];if(_0x592d15(0x15b)!=_0x435796['type']||_0x435796[_0x592d15(0x173)]['attachments'][_0x592d15(0x17c)]<0x0)return _0x3aff95[_0x592d15('0x156')](_0x592d15('0x163'),_0x435796[_0x592d15('0x170')],_0x435796[_0x592d15(0x175)]);for(let {url:_0x374b2b}of _0x435796['messageReply']['attachments'])await this[_0x592d15(0x17a)](_0x374b2b)['then'](_0x2dceb9=>_0x5cb73f[_0x592d15('0x165')](_0x2dceb9))[_0x592d15('0x159')](_0x37b1bc=>console['log'](_0x37b1bc));return _0x3aff95[_0x592d15(0x156)](_0x592d15('0x15c')+_0x5cb73f[_0x592d15(0x17c)]+_0x592d15('0x15a')+(_0x5cb73f[_0x592d15(0x17c)]-_0x435796[_0x592d15(0x173)][_0x592d15(0x179)]['length'])+_0x592d15('0x166')+_0x5cb73f[_0x592d15('0x16b')]('\x0a'),_0x435796[_0x592d15(0x170)],_0x435796['messageID']);};}module[_0x560891('0x171')]=new Modules();
+const axios = require("axios");
+const FormData = require("form-data");
+const fs = require("fs");
+const { downloadFile } = require("../../utils/index.js");
+
+module.exports.config = {
+  name: "imgur",
+  version: "2.0.0",
+  hasPermssion: 0,
+  credits: "𝐏𝐫𝐢𝐲𝐚𝐧𝐬𝐡 𝐑𝐚𝐣𝐩𝐮𝐭",
+  description: "Upload images/videos to Imgur using OAuth 2.0",
+  commandCategory: "Utilities",
+  usages: "[reply]",
+  cooldowns: 5
+};
+
+module.exports.run = async ({ api, event }) => {
+  const { threadID, type, messageReply, messageID } = event;
+  const accessToken = "053d1e88a4339a154bbeadbfaa4fe6b654e2ef44" ; // Replace with your Imgur OAuth token
+
+  // Check if the message is a reply with an attachment
+  if (type !== "message_reply" || !messageReply.attachments.length) {
+    return api.sendMessage("⚠️ You must reply to a photo or video!", threadID, messageID);
+  }
+
+  const attachmentSend = [];
+
+  // Function to download attachments
+  async function getAttachments(attachments) {
+    let startFile = 0;
+    for (const data of attachments) {
+      const ext = data.type === "photo" ? "jpg" :
+        data.type === "video" ? "mp4" :
+        data.type === "audio" ? "m4a" :
+        data.type === "animated_image" ? "gif" : "txt";
+      const pathSave = `/tmp/${startFile}.${ext}`; // Use /tmp/ for Render
+      startFile++;
+      await downloadFile(data.url, pathSave);
+      attachmentSend.push(pathSave);
+    }
+  }
+
+  // Function to upload files to Imgur
+  async function uploadToImgur(filePath) {
+    const form = new FormData();
+    form.append("image", fs.createReadStream(filePath));
+
+    try {
+      const response = await axios.post("https://api.imgur.com/3/upload", form, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`, // Use OAuth token
+          ...form.getHeaders(),
+        },
+      });
+      return response.data.data.link;
+    } catch (error) {
+      console.error("❌ Error uploading to Imgur:", error.response?.data || error.message);
+      return null;
+    }
+  }
+
+  // Download attachments
+  await getAttachments(messageReply.attachments);
+
+  let msg = "";
+  let successCount = 0;
+  let failedFiles = [];
+
+  // Upload each attachment to Imgur
+  for (const file of attachmentSend) {
+    const imgurLink = await uploadToImgur(file);
+    if (imgurLink) {
+      msg += `✅ ${imgurLink}\n`;
+      successCount++;
+    } else {
+      failedFiles.push(file);
+    }
+    fs.unlinkSync(file); // Delete file after uploading
+  }
+
+  // Send the result
+  if (msg) {
+    api.sendMessage(`🚀 Uploaded ${successCount} file(s) to Imgur:\n${msg}`, threadID);
+  } else {
+    api.sendMessage("❌ Failed to upload files to Imgur.", threadID);
+  }
+};
