@@ -1,9 +1,9 @@
 module.exports.config = {
-  name: "itom",
+  name: "ai",
   version: "2.0.8",
   hasPermssion: 0,
   credits: ".",
-  description: "ITOM",
+  description: "AI",
   commandCategory: "utilities",
   usages: "cmdname [question]",
   cooldowns: 5,
@@ -21,7 +21,7 @@ const { Configuration, OpenAIApi } = require("openai");
                             const openai = new OpenAIApi(configuration);
   let data = args.join(" ");
                             if (data.length < 2) {
-                                api.sendMessage("?ai<⚠️ask anything👑> credits by  nawaz ahmad", event.threadID);
+                                api.sendMessage("?ai<⚠️ask anything👑> credits by  Jaychris Garcia", event.threadID);
                             } else {
                                 try {
                                     const completion = await openai.createCompletion({
