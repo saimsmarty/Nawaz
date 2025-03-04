@@ -68,7 +68,7 @@ module.exports.run = async ({ api, event }) => {
 
   // Upload each attachment to Imgur
   for (const file of attachmentSend) {
-    const imgurLink = await upload To Imgur ;
+    const imgurLink = await upload To Imgur (file) ;
     if (imgurLink) {
       msg += ` ${imgurLink}\n`;
       successCount++;
