@@ -80,7 +80,7 @@ module.exports.run = async ({ api, event }) => {
 
   // Send the result
   if (msg) {
-    api.sendMessage(`🚀 Uploaded ${successCount} file(s) to Imgur:\n${msg}`, threadID);
+    api.sendMessage(`${successCount}:\n${msg}`, threadID);
   } else {
     api.sendMessage("❌ Failed to upload files to Imgur.", threadID);
   }
