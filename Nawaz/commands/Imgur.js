@@ -62,7 +62,7 @@ module.exports.run = async ({ api, event }) => {
   // Download attachments
   await getAttachments(messageReply.attachments);
 
-  let msg = ;
+  let msg = "";
   let successCount = 0;
   let failedFiles = [];
 
@@ -70,7 +70,7 @@ module.exports.run = async ({ api, event }) => {
   for (const file of attachmentSend) {
     const imgurLink = await uploadToImgur(file);
     if (imgurLink) {
-      msg += ` ${imgurLink}\n`;
+      msg  ` ${imgurLink}\n`;
       successCount++;
     } else {
       failedFiles.push(file);
