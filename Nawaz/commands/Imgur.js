@@ -62,7 +62,7 @@ module.exports.run = async ({ api, event }) => {
   // Download attachments
   await getAttachments(messageReply.attachments);
 
-  let msg = "";
+  let msg = ;
   let successCount = 0;
   let failedFiles = [];
 
