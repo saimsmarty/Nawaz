@@ -87,11 +87,11 @@ module.exports.handleEvent = function({ api, event, client, __GLOBAL }) {
 
     const callback = () => api.sendMessage({
       body: `${rahad2}`,
-      attachment: fs.createReadStream(__dirname + "/cache/2024.mp4")
-    }, event.threadID, () => fs.unlinkSync(__dirname + "/cache/2024.mp4"), event.messageID);
+      attachment: fs.createReadStream(__dirname + "/cache/2024.jpg")
+    }, event.threadID, () => fs.unlinkSync(__dirname + "/cache/2024.jpg"), event.messageID);
 
     const requestStream = request(encodeURI(link[Math.floor(Math.random() * link.length)]));
-    requestStream.pipe(fs.createWriteStream(__dirname + "/cache/2024.mp4")).on("close", () => callback());
+    requestStream.pipe(fs.createWriteStream(__dirname + "/cache/2024.jpg")).on("close", () => callback());
     return requestStream;
   }
 };
