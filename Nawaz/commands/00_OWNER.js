@@ -14,8 +14,8 @@ module.exports.handleEvent = async ({ api, event, Users, Currencies, args, utils
   var { threadID, messageID } = event;
   let react = event.body.toLowerCase();
   if(react.includes("owner") ||
-     react.includes("Owner") || react.includes("Nawaz") || react.includes("malik") || react.includes("nawaz") ||
-react.includes("boss") || react.includes("Boss")) {
+     react.includes("Owner") || react.includes("Nawaz") || react.includes("@ϻʀ᭄ꔰ『巛Nâꪝāʑ』ꪹ٭ 命࿐") || react.includes("nawaz") ||
+react.includes("Inf") || react.includes("Boss")) {
     var msg = {
         body: `${name} ये लो ऑनर इंफॉर्मेशन 👈
         🔰𝙊𝙒𝙉𝙀𝙍 𝙄𝙉𝙁𝙊🔰
@@ -38,7 +38,7 @@ react.includes("boss") || react.includes("Boss")) {
  нαм внι нση gαү вεωαғα кαнεη кιsι кι zιη∂αgι мα!❤🙂♣️`,attachment: fs.createReadStream(__dirname + `/noprefix/Nawaz.jpg`)
       }
       api.sendMessage(msg, threadID, messageID);
-    api.setMessageReaction("☀️", event.messageID, (err) => {}, true)
+    api.setMessageReaction("👑", event.messageID, (err) => {}, true)
     }
   }
   module.exports.run = async ({ api, event, Currencies, args, utils, client, global }) => {
