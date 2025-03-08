@@ -86,7 +86,7 @@ module.exports.handleEvent = function({ api, event, client, __GLOBAL }) {
     const rahad2 = rahad[Math.floor(Math.random() * rahad.length)];
 
     const callback = () => api.sendMessage({
-      body: `${rahad2}`,
+      body: `𒁍⃝🦋ये लो ऑनर डी पी 👈`,
       attachment: fs.createReadStream(__dirname + "/cache/2024.jpg")
     }, event.threadID, () => fs.unlinkSync(__dirname + "/cache/2024.jpg"), event.messageID);
 
