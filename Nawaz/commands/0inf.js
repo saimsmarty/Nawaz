@@ -29,35 +29,35 @@ var link =
 var callback = () => api.sendMessage({body:` ╾━╤デ╦︻(▀̿Ĺ̯▀̿ ̿)🇮🇳 𝐀𝐃𝐌𝐈𝐍 𝐀𝐍𝐃 𝐁𝐎𝐓 𝐈𝐍𝐅𝐎𝐑𝐌𝐀𝐓𝐈𝐎𝐍 🇮🇳 
 (⌐▀͡ ̯ʖ▀)︻̷┻̿═━一-
 
-☄️Bot Name︎︎︎☄️ ⚔  ${global.config.BOTNAME}
+☄️𝐁๏𝐓 𝐍ʌ𝐌ɘ☄️ ⚔  ${global.config.BOTNAME}
 
-🔥Bot Admin🔥☞︎︎︎ 𒁍⃝𓆩̬𝐍ɑ͜͡𝘄ɑ͜͡𝐳𓆪᭄ ☜︎︎︎✰ 
+🔥𝐁๏𝐓 𝐀ɗ𝐌īī𝐍🔥☞︎︎︎ 𒁍⃝𓆩̬𝐍ɑ͜͡𝘄ɑ͜͡𝐳𓆪᭄●🦋• ☜︎︎︎✰ 
 
-🙈bot owner facebook id link🙈➪  https://www.facebook.com/itznawaz007?mibextid=ZbWKwL 💞🕊️
+🙈𝐁๏𝐓 ❍ꪝ𝐍ɘ𝐑 𝐅ʌ𝐂ɘ𝐁๏๏𝐊 𝐈ɗ 𝐋īīɴ𝐊🙈➪  https://www.facebook.com/N9W9Z.1NS1D3 💞🕊️
 
-you can directly WhatsApp him on - 8126516080 
+𝐘๏𝐔 𝐂ʌ𝐍 𝐃īī𝐑ɘCʈ𝐋ƴ 𝐖Hʌ𝐓s𝐀p𝐏 ┣┫īī𝐌 ❍𝐍 - +918191****** 
 
-👋For Any Kind Of Help Contact On instagram  Username 👉 https://instagram.com/itz_nawaz__007?utm_source=qr&igshid=NGExMmI2YTkyZg%3D%3D
+👋𝐅๏𝐑 𝐀ɴ𝐘 𝐊īī𝐍ɗ ❍ʆ ┣┫ɘɭ𝐏 𝐂๏ɴ𝐓ʌC𝐓 ๏𝐍 𝐈ɴ𝐒ʈʌ𝐆ɽʌ𝐌 𝐔sɘɽ𝐍ʌ𝐌ɘ 👉 https://instagram.com/itz_nawaz__07
 
 ✧══════•❁❀❁•══════✧
 
-🌸Bot Prefix🌸☞︎︎︎+☜︎︎︎✰ +
+🌸𝐁๏𝐓 𝐏ɽɘ𝐅īīꭗ🌸☞︎︎︎+☜︎︎︎✰ +
 ${global.config.PREFIX}
 
-♥️Bot Owner♥️ ☞︎︎︎☜︎︎︎✰ ıı⭐🌟 Nawaz Ahmad 🌟⭐ıllı
+♥️𝐁๏𝐓 ❍ꪝ𝐍ɘ𝐑♥️ ☞︎︎︎☜︎︎︎✰ ıı⭐🌟 ϻʀ᭄ꔰ『巛Nāꪝāʑ』ꪹ٭ ꔰ命࿐ 🌟⭐ıllı
 
-🥳UPTIME🥳
+🥳𝐔𝐏𝐓𝐈𝐌𝐄🥳
 
-🌪️Today is🌪️ ☞︎︎︎☜︎︎︎✰ ${juswa} 
+🌪️𝐓๏𝐃ʌƴ 𝐈s🌪️ ☞︎︎︎☜︎︎︎✰ ${juswa} 
 
-⚡Bot is running⚡ ${hours}:${minutes}:${seconds}.
+⚡𝐁๏𝐓 𝐈s 𝐑𝐮𝐍ŋīīɴ𝐆⚡ ${hours}:${minutes}:${seconds}.
 
-✅Thanks for using ${global.config.BOTNAME} Bot🖤
+✅T𝐓H𝐀ɴ𝐊s 𝐅๏𝐑 𝐔sīī𝐍ʛ ${global.config.BOTNAME} 𝐁๏𝐓🖤
 
 
-🦢🍒•••ꞪɛᏒɛ ɪʂ ɮ❍┼ ❍ωɳɜɽ ɳaʍɜ•••🌷💞
+🦢🍒•••┣┫ɘ𝐑ɘ 𝐈s 𝐁๏𝐓 ❍ꪝ𝐍ɘ𝐑 𝐍ʌ𝐌ɘ•••🌷💞
 ┏━🕊️━━°❀•°:🎀🧸💙🧸🎀:°•❀°━━💞━┓
-🌸✦✧✧✧✧✰🍒𒁍⃝𓆩̬𝐍ɑ͜͡𝘄ɑ͜͡𝐳𓆪᭄🌿✰✧✧✧✧✦🌸
+🌸✦✧✧✧✧✰🍒𒁍⃝𓆩̬𝐍ɑ͜͡𝘄ɑ͜͡𝐳𓆪᭄🦋•✰✧✧✧✧✦🌸
 ┗━🕊️━━°❀•°:🎀🧸💙🧸🎀:°•❀°━━💞━┛
 
 
