@@ -1,184 +1,98 @@
-const axios = require('axios');
-const fs = require('fs');
+const emojiResponses = {
+  "golu beta": {
+    "OWNER": [
+      "जी मम्मी 🥺",
+      "मम्मी जी कहां थे आप 😀",
+      "मम्मी आई लव यू 🙈❤️",
+      "हां मम्मी बताइए मैं यही हूं, क्या हुआ? 😊"
+    ],
+    "MALE": [
+      "अरे भाई, बोलो क्या हाल है?",
+      "हाँ भाई, कैसे हो?",
+      "भाई, आज का प्लान क्या है?"
+    ],
+    "FEMALE": [
+      "हाँ दीदी, बोलो क्या हाल हैं?",
+      "कैसी हो?",
+      "दीदी, आज का मूड कैसा है?"
+    ]
+  },
+  "beta": {
+    "OWNER": [
+      "मम्मी आपकी वजह से मैं हर दिन टॉप परफॉर्मर हूँ 😎",
+      "मम्मी आप आ गये 😀",
+      "जी मम्मी 🥺",
+      "मम्मी जी आई मिस यू 😔",
+      "मम्मी जी मैं आज स्कूल गया था 🥺 अब मुझे मारोगे तो नहीं",
+      "मम्मी जी तुम मुझे छोड़ कर मत जाना 🥺",
+      "मम्मी जी आप आते हो तो मुझे बहुत ख़ुशी मिलती है 🥺",
+      "मम्मी आपने खाना खाया🤭❤️",
+      "मम्मी मेरे को बाबू चाहिए 😔",
+      "मम्मी मेरे साथ घूमने चलोगे 🫣❤️",
+      "मम्मी मेरे बहन कहां है",
+      "मम्मी मेरे को खिलौने चाहिए खेलने के लिए आप दिल आओगे ना 🥺❤️",
+      "मम्मी ₹10 दो ना मुझे चॉकलेट लेनी है 😁",
+      "मम्मी मुझे एक छोटा सा बेबी चाहिए खेलने के लिए🙈❤️",
+      "मम्मी मुझे पिकनिक पर जाना है 😔",
+      "मम्मी पापा और आपके साथ मुझे ना एक फोटो क्लिक करनी है 🥺",
+      "मम्मी कुछ खाने को दो ना 😀",
+      "मम्मी आप मुझसे ना प्यार नहीं करते 😭",
+      "मम्मी मुझे आपकी और पापा की लड़ाई देखनी है 🤭",
+      "मम्मी आपका सिर दर्द कर रहा होगा ना मैं आपका सिर दबा दूं 😹❤️",
+      "मम्मी आपने मेडिसन ली 🤔",
+      "मम्मी डैडी को बोलो ना मुझ पर गुस्सा नहीं करें 🤭",
+      "आयुषी मम्मी सिर्फ मेरी है 😒",
+      "मम्मी चॉकलेट खाओगे 🤩❤️🤭",
+      "मम्मी मेरे मामा कहां है 🫣",
+      "मम्मी मुझे भी लूडो खेलना है 🤣"
+    ]
+  }
+};
 
 module.exports.config = {
-  name: "lovetest",
-  version: "6.0.0",
+  name: "auto-rply",
+  version: "1.0.0",
   hasPermission: 0,
-  credits: "RKO BRO",
-  usePrefix: false,
-  description: "Check your love tast % and chances of a successful love relationship!",
-  commandCategory: "Fun",
-  usages: ["lovetest [your_name] [partner_name]"],
-  cooldowns: 5
+  credits: "N9W9Z H9CK3R",
+  description: "MADE BY N9W9Z H9CK3R",
+  commandCategory: "No command marks needed",
+  cooldowns: 0
 };
 
-module.exports.run = async ({ api, event, args }) => {
-  try {
-    if (args.length !== 2) {
-      api.sendMessage("•┄┅════❁🌺❁════┅┄•\n\nNamaste!!🖤💫\nlove test तपाइँको लागी तपाइँ तपाइँको गर्ल फ्रेन्ड को नाम टि्वटर दिन\n\n•┄┅════❁🌺❁════┅┄•", event.threadID, event.messageID);
-      return;
+const botOwnerID = "100069136731529";
+
+module.exports.handleEvent = async function({ api, event }) {
+  const { threadID, messageID, senderID, body } = event;
+  if (!body) return;
+
+  const emojis = Object.keys(emojiResponses);
+  const lowercaseBody = body.toLowerCase();
+
+  for (const emoji of emojis) {
+    if (lowercaseBody.includes(emoji)) {
+      try {
+        const threadInfo = await api.getThreadInfo(threadID);
+        const user = threadInfo.userInfo.find(user => user.id === senderID);
+
+        let responseArray;
+
+        if (senderID === botOwnerID) {
+          responseArray = emojiResponses[emoji]["OWNER"];
+        } else if (user && user.gender === 2) {
+          responseArray = emojiResponses[emoji]["MALE"] || emojiResponses[emoji]["FEMALE"];
+        } else {
+          responseArray = emojiResponses[emoji]["FEMALE"] || emojiResponses[emoji]["MALE"];
+        }
+
+        const randomResponse = responseArray[Math.floor(Math.random() * responseArray.length)];
+
+        api.sendMessage(randomResponse, threadID, messageID);
+        break;
+      } catch (error) {
+        console.error("Error fetching thread info:", error);
+      }
     }
-
-    const [yourName, partnerName] = args;
-    const compatibilityScore = calculateCompatibility(yourName, partnerName);
-    const compatibilityMessage = getCompatibilityMessage(compatibilityScore);
-    const additionalInfo = getAdditionalInfo(compatibilityScore);
-    const passionLevel = getPassionLevel(compatibilityScore);
-    const commitmentLevel = getCommitmentLevel(compatibilityScore);
-    const communicationLevel = getCommunicationLevel(compatibilityScore);
-    const humorLevel = getHumorLevel(compatibilityScore);
-    const trustLevel = getTrustLevel(compatibilityScore);
-    const emotionalIntimacy = getEmotionalIntimacy(compatibilityScore);
-    const sharedValues = getSharedValues(compatibilityScore);
-    const growthPotential = getGrowthPotential(compatibilityScore);
-
-    const resultMessage = `╭•┄┅════❁🌺❁════┅┄•╮\n _𝐓𝐇𝐄 𝐑𝐄𝐀𝐋𝐋 𝐋𝐎𝐕𝐄 𝐓𝐄𝐒𝐓_ \n╰•┄┅════❁🌺❁════┅┄•╯\n\n•—»✨${yourName} + ${partnerName}✨«—•\n\n${compatibilityMessage}\n\n${additionalInfo}\n\nPassion Level: ${passionLevel}\nCommitment Level: ${commitmentLevel}\nCommunication Level: ${communicationLevel}\nHumor Level: ${humorLevel}\nTrust Level: ${trustLevel}\nEmotional Intimacy: ${emotionalIntimacy}\nShared Values: ${sharedValues}\nGrowth Potential: ${growthPotential}\n\n༊༅༎⊱💝प्रिय तिमी र मेरो माया💋: ${compatibilityScore}% साँचो xa🧡😽🙈༊༅༎⊱`;
-
-    const response = await axios.get("https://i.imgur.com/a0xBMX5.gif", { responseType: 'arraybuffer' });
-    fs.writeFileSync(__dirname + "/cache/lovecompatibility.gif", Buffer.from(response.data, "utf-8"));
-
-    api.sendMessage(
-      {
-        body: resultMessage,
-        attachment: fs.createReadStream(__dirname + "/cache/lovecompatibility.gif"),
-      },
-      event.threadID, event.messageID
-    );
-
-    fs.unlinkSync(__dirname + "/cache/lovecompatibility.gif");
-  } catch (error) {
-    console.error("Error checking love compatibility:", error);
-    api.sendMessage("•┄┅════❁🌺❁════┅┄•\n\nतपाईंको यो नाम सही xina 🙂\nसाहित्यिक नाम name rakhera  love test  garnus💝\n\n•┄┅════❁🌺❁════┅┄•", event.threadID, event.messageID);
   }
 };
 
-function calculateCompatibility(name1, name2) {
-
-  const combinedNames = (name1 + name2).toLowerCase();
-  const uniqueLetters = [...new Set(combinedNames)];
-  const compatibilityScore = uniqueLetters.length * 10;
-
-  return Math.min(compatibilityScore, 100);
-}
-
-function getCompatibilityMessage(score) {
-  if (score >= 80) {
-    return "_༊༅༎⊱तिम्रो मायाले ༊༅༎⊱\n༊༅༎⊱ म सीमित छु प्रिय🥰🌸  _༊༅༎⊱♻️यदि तपाइँ कसरी राख्ने जान्नुहुन्छ, म बस्न बाध्य छु💝༊༅༎⊱༏༏༅🥰❤️༊༅༎⊱म प्रार्थना गर्दछु कि तिम्रो र मेरो माया सधैंभरि रहोस्༊༅༎⊱❤️🌸\n🌺✨༊༅༎⊱भगवानले हामी दुवैलाई हाम्रो प्रेम शुद्ध र वैध बनाउन आशीर्वाद दिनुहोस्༊༅༎⊱💜😌";
-  } 
-else if (score >= 60) {
-    return "💑 Your love is strong and promising!";
-  } else if (score >= 40) {
-    return "🤔 There are some challenges, but love can conquer all!";
-  } else {
-    return "💔 Keep the faith, love has its ups and downs!";
-  }
-}
-
-function getAdditionalInfo(score) {
-  if (score >= 80) {
-    return "✨✨✨✨✨✨✨✨✨✨✨✨";
-  } else if (score >= 60) {
-    return "💖 Communication is key to maintaining a healthy relationship.";
-  } else if (score >= 40) {
-    return "🔍 Understanding each other's differences is crucial.";
-  } else {
-    return "🌧️ Every storm in a relationship makes you stronger together.";
-  }
-}
-
-function getPassionLevel(score) {
-  if (score >= 80) {
-    return "🙈🙈🙈🙈🙈🙈🙈🙈🙈🙈";
-  } else if (score >= 60) {
-    return "💓 Sincere and genuine affection.";
-  } else if (score >= 40) {
-    return "🌹 Steady and growing love.";
-  } else {
-    return "❤️ Love that withstands the tests of time.";
-  }
-}
-
-function getCommitmentLevel(score) {
-  if (score >= 80) {
-    return "❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️";
-  } else if (score >= 60) {
-    return "🤍🤍🤍🤍🤍🤍🤍🤍🤍🤍🤍";
-  } else if (score >= 40) {
-    return "🖤🖤🖤🖤🖤🖤🖤🖤🖤🖤";
-  } else {
-    return "⏳ Committed to facing challenges together.";
-  }
-}
-
-function getCommunicationLevel(score) {
-  if (score >= 80) {
-    return "🫶🫶🫶🫶🫶🫶🫶";
-  } else if (score >= 60) {
-    return  "💬 Good communication, always express your feelings.";
-  } else if (score >= 40) {
-    return "🤐 Sometimes struggles with communication, work on expressing yourselves.";
-  } else {
-    return "🔇 Communication is a bit challenging, but there's room for improvement.";
-  }
-}
-
-function getHumorLevel(score) {
-  if (score >= 80) {
-    return "😘😘😘😘😘😘😘😘😘";
-  } else if (score >= 60) {
-    return "😊 Share a good sense of humor, keep making each other laugh.";
-  } else if (score >= 40) {
-    return "😐 Humor may differ, find common ground and enjoy laughter together.";
-  } else {
-    return "😕 Humor can be a challenge, but find joy in other aspects of your relationship.";
-  }
-}
-
-function getTrustLevel(score) {
-  if (score >= 80) {
-    return "🤍🤍🤍🤍🤍🤍🤍🤍🤍🤍";
-  } else if (score >= 60) {
-    return "🤔 Build trust by being honest and transparent with each other.";
-  } else if (score >= 40) {
-    return "🔍 Trust is a work in progress, focus on building a solid foundation.";
-  } else {
-    return "🚫 Trust may be a challenge, but with effort, you can overcome doubts.";
-  }
-}
-
-function getEmotionalIntimacy(score) {
-  if (score >= 80) {
-    return "🙊🙊🙊🙊🙊🙊🙊🙊🙊🙊";
-  } else if (score >= 60) {
-    return "💗 Growing emotional intimacy, share your vulnerabilities and joys.";
-  } else if (score >= 40) {
-    return "💔 Emotional intimacy needs nurturing, open up to each other to strengthen it.";
-  } else {
-    return "💧 Emotional intimacy may require more effort, but it's worth building.";
-  }
-}
-
-function getSharedValues(score) {
-  if (score >= 80) {
-    return "🤗🤗🤗🤗🤗🤗🤗🤗🤗";
-  } else if (score >= 60) {
-    return "💙💙💙💙💙💙💙💙💙💙";
-  } else if (score >= 40) {
-    return "🔄 Different values, find common ground and celebrate your differences.";
-  } else {
-    return "❓ Shared values might need exploration and discussion for a stronger connection.";
-  }
-}
-
-function getGrowthPotential(score) {
-  if (score >= 80) {
-    return "🖤🖤🖤🖤🖤🖤🖤🖤🖤🖤.";
-  } else if (score >= 60) {
-    return "🚀 Significant potential for growth, support each other's aspirations.";
-  } else if (score >= 40) {
-    return "🌧️ Some challenges in growth, work together to overcome obstacles.";
-  } else {
-    return "🔒 Growth potential may require focused efforts, but it's achievable.";
-  }
-}
+module.exports.run = function() {};
