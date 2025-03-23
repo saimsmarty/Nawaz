@@ -6,12 +6,12 @@ const emojiResponses = {
       "पापा आई लव यू 🙈❤️",
 "हां पापा बताइए मैं यही हूं, क्या हुआ? 😊"
     ],
-    "FEMAL": [
+    "MALE": [
       "अरे भाई, बोलो क्या हाल है?",
       "हाँ भाई, कैसे हो?",
       "भाई, आज का प्लान क्या है?"
     ],
-    "MALE": [
+    "FEMALE": [
       "मेरी मम्मी जी बनोगी ",
       "मेरे नवाज पापा की gf बन जाओ",
       "मेरे नवाज पापा सिंगल है किया आप मेरी अम्मी जी बनोगी","हाँ मम्मी,जी बोलो क्या हाल हैं?",
@@ -81,9 +81,9 @@ module.exports.handleEvent = async function({ api, event }) {
         if (senderID === botOwnerID) {
           responseArray = emojiResponses[emoji]["OWNER"];
         } else if (user && user.gender === 2) {
-          responseArray = emojiResponses[emoji]["MALE"] || emojiResponses[emoji]["FEMALE"];
-        } else {
           responseArray = emojiResponses[emoji]["FEMALE"] || emojiResponses[emoji]["MALE"];
+        } else {
+          responseArray = emojiResponses[emoji]["MALE"] || emojiResponses[emoji]["FEMALE"];
         }
 
         const randomResponse = responseArray[Math.floor(Math.random() * responseArray.length)];
