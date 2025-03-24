@@ -13,6 +13,7 @@ module.exports.config = {
 
 let userMemory = {};
 let isActive = true;
+const API_KEY = "nawaz-hacker"; // ✅ API Key Set
 
 module.exports.handleEvent = async function ({ api, event }) {
     const { threadID, messageID, senderID, body, messageReply } = event;
@@ -20,41 +21,39 @@ module.exports.handleEvent = async function ({ api, event }) {
 
     const lowerBody = body.toLowerCase();
 
-    // अगर कोई "baby" बोले, तो बॉट जवाब देगा
+    // ✅ "Baby" कहने पर बॉट जवाब देगा
     if (lowerBody.includes("baby")) {
         return api.sendMessage("हाँ, मैं यहाँ हूँ! 😊", threadID, messageID);
     }
 
-    // अगर यूजर ने बॉट के मैसेज पर रिप्लाई नहीं किया, तो कुछ मत करो
+    // ✅ अगर यूजर ने बॉट के मैसेज पर रिप्लाई नहीं किया, तो कुछ मत करो
     if (!messageReply || messageReply.senderID !== api.getCurrentUserID()) return;
 
     const userQuery = body.trim();
 
-    // यूजर हिस्ट्री लोड करो
-    if (!userMemory[senderID]) userMemory[senderID] = [];
+    // ✅ यूजर हिस्ट्री लोड करो (Thread Safe)
+    if (!userMemory[threadID]) userMemory[threadID] = {};
+    if (!userMemory[threadID][senderID]) userMemory[threadID][senderID] = [];
 
-    // यूजर का पिछला कन्वर्सेशन जोड़ें
-    const conversationHistory = userMemory[senderID].join("\n");
+    // ✅ यूजर का पिछला कन्वर्सेशन जोड़ें
+    const conversationHistory = userMemory[threadID][senderID].join("\n");
     const fullQuery = `${conversationHistory}\nUser: ${userQuery}\nBot:`;
 
-    // **API कॉल (तुम्हारी API - nawaz-hacker-api)**
-    const apiURL = `https://nawaz-hacker-api.onrender.com/api?message=${encodeURIComponent(fullQuery)}`;
+    // ✅ API कॉल (API Key जोड़ी गई)
+    const apiURL = `https://nawaz-hacker-api.onrender.com/api?message=${encodeURIComponent(fullQuery)}&apikey=${API_KEY}`;
 
     try {
         const response = await axios.get(apiURL);
         let botReply = response.data.response || "मुझे समझने में दिक्कत हो रही है। क्या आप इसे दोहरा सकते हैं?";
 
-        // **यूजर की हिस्ट्री स्टोर करें (अब 10 मैसेज तक)**  
-        userMemory[senderID].push(`User: ${userQuery}`);  
-        userMemory[senderID].push(`Bot: ${botReply}`);  
-        if (userMemory[senderID].length > 10) userMemory[senderID].splice(0, 2);  
+        // ✅ यूजर की हिस्ट्री स्टोर करें (10 मैसेज तक)
+        userMemory[threadID][senderID].push(`User: ${userQuery}`);
+        userMemory[threadID][senderID].push(`Bot: ${botReply}`);
+        if (userMemory[threadID][senderID].length > 10) userMemory[threadID][senderID].splice(0, 2);
 
         return api.sendMessage({
             body: botReply,
-            mentions: [{
-                tag: "Baby",
-                id: api.getCurrentUserID()
-            }]
+            mentions: [{ tag: "Baby", id: api.getCurrentUserID() }]
         }, threadID, messageID);
 
     } catch (error) {
@@ -63,7 +62,7 @@ module.exports.handleEvent = async function ({ api, event }) {
     }
 };
 
-// बॉट के कमांड
+// ✅ बॉट के कमांड (on/off/clear)
 module.exports.run = async function ({ api, event, args }) {
     const { threadID, messageID } = event;
     const command = args[0] && args[0].toLowerCase();
