@@ -31,25 +31,12 @@ module.exports.handleEvent = async function ({ api, event }) {
 
     const userQuery = body.trim();
 
-    // ✅ यूजर हिस्ट्री लोड करो (Thread Safe)
-    if (!userMemory[threadID]) userMemory[threadID] = {};
-    if (!userMemory[threadID][senderID]) userMemory[threadID][senderID] = [];
-
-    // ✅ यूजर का पिछला कन्वर्सेशन जोड़ें
-    const conversationHistory = userMemory[threadID][senderID].join("\n");
-    const fullQuery = `${conversationHistory}\nUser: ${userQuery}\nBot:`;
-
     // ✅ API कॉल (API Key जोड़ी गई)
-    const apiURL = `https://nawaz-hacker-api.onrender.com/api?message=${encodeURIComponent(fullQuery)}&apikey=${API_KEY}`;
+    const apiURL = `https://nawaz-hacker-api.onrender.com/api?message=${encodeURIComponent(userQuery)}&apikey=${API_KEY}`;
 
     try {
         const response = await axios.get(apiURL);
         let botReply = response.data.response || "मुझे समझने में दिक्कत हो रही है। क्या आप इसे दोहरा सकते हैं?";
-
-        // ✅ यूजर की हिस्ट्री स्टोर करें (10 मैसेज तक)
-        userMemory[threadID][senderID].push(`User: ${userQuery}`);
-        userMemory[threadID][senderID].push(`Bot: ${botReply}`);
-        if (userMemory[threadID][senderID].length > 10) userMemory[threadID][senderID].splice(0, 2);
 
         return api.sendMessage({
             body: botReply,
@@ -62,7 +49,7 @@ module.exports.handleEvent = async function ({ api, event }) {
     }
 };
 
-// ✅ बॉट के कमांड (on/off/clear)
+// ✅ बॉट के कमांड (on/off)
 module.exports.run = async function ({ api, event, args }) {
     const { threadID, messageID } = event;
     const command = args[0] && args[0].toLowerCase();
@@ -73,8 +60,5 @@ module.exports.run = async function ({ api, event, args }) {
     } else if (command === "off") {
         isActive = false;
         return api.sendMessage("⚠️ Baby AI अब निष्क्रिय है।", threadID, messageID);
-    } else if (command === "clear") {
-        userMemory = {};
-        return api.sendMessage("🧹 सभी उपयोगकर्ताओं की बातचीत की हिस्ट्री क्लियर कर दी गई है।", threadID, messageID);
     }
 };
