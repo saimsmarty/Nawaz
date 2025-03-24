@@ -38,7 +38,7 @@ module.exports.handleEvent = async function ({ api, event }) {
     const fullQuery = `${conversationHistory}\nUser: ${userQuery}\nBot:`;
 
     // **API कॉल (तुम्हारी API - nawaz-hacker-api)**
-    const apiURL = `https://https://nawaz-hacker-api.onrender.com/api?message=${encodeURIComponent(fullQuery)}`;
+    const apiURL = `https://nawaz-hacker-api.onrender.com/api?message=${encodeURIComponent(fullQuery)}`;
 
     try {
         const response = await axios.get(apiURL);
