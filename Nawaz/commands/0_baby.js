@@ -11,9 +11,9 @@ module.exports.config = {
     cooldowns: 5,
 };
 
-let userMemory = {};
-let isActive = true;
-const API_KEY = "nawaz-hacker"; // ✅ API Key Set
+let isActive = false; // ✅ Default में बंद रहेगा
+const API_KEY = "nawaz-hacker"; // ✅ API Key
+const API_URL = "https://nawaz-hacker-api.onrender.com/api"; // ✅ Render API URL
 
 module.exports.handleEvent = async function ({ api, event }) {
     const { threadID, messageID, senderID, body, messageReply } = event;
@@ -31,11 +31,9 @@ module.exports.handleEvent = async function ({ api, event }) {
 
     const userQuery = body.trim();
 
-    // ✅ API कॉल (API Key जोड़ी गई)
-    const apiURL = `https://nawaz-hacker-api.onrender.com/api?message=${encodeURIComponent(userQuery)}&apikey=${API_KEY}`;
-
+    // ✅ API कॉल
     try {
-        const response = await axios.get(apiURL);
+        const response = await axios.get(`${API_URL}?message=${encodeURIComponent(userQuery)}&apikey=${API_KEY}`);
         let botReply = response.data.response || "मुझे समझने में दिक्कत हो रही है। क्या आप इसे दोहरा सकते हैं?";
 
         return api.sendMessage({
@@ -44,7 +42,7 @@ module.exports.handleEvent = async function ({ api, event }) {
         }, threadID, messageID);
 
     } catch (error) {
-        console.error("API Error:", error.message);
+        console.error("❌ API Error:", error.message);
         return api.sendMessage("❌ AI से जवाब लाने में समस्या हुई। कृपया बाद में प्रयास करें।", threadID, messageID);
     }
 };
@@ -60,5 +58,7 @@ module.exports.run = async function ({ api, event, args }) {
     } else if (command === "off") {
         isActive = false;
         return api.sendMessage("⚠️ Baby AI अब निष्क्रिय है।", threadID, messageID);
+    } else {
+        return api.sendMessage("ℹ️ उपयोग करें: '+baby on' चालू करने के लिए और '+baby off' बंद करने के लिए।", threadID, messageID);
     }
 };
