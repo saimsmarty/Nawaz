@@ -65,7 +65,7 @@ module.exports.handleEvent = async function ({ api, event }) {
       } else {
         try {
           const userInfo = await api.getUserInfo(senderID);
-          const userGender = userInfo[senderID].gender; // 1 = Female, 2 = Male
+          const userGender = userInfo[senderID]?.gender; // 1 = Female, 2 = Male
 
           if (userGender === 1) {
             responseArray = emojiResponses[emoji]["FEMALE"];
