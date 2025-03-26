@@ -4,7 +4,7 @@ module.exports.config = {
     name: "baby",
     version: "1.0.0",
     hasPermission: 0,
-    credits: "Nawaz Boss",
+    credits: "N9W9Z H9CK3R",
     description: "Baby AI - स्मार्ट AI चैटबॉट",
     commandCategory: "AI",
     usages: "[बॉट के मैसेज पर रिप्लाई करें]",
