@@ -77,21 +77,19 @@ module.exports.handleEvent = async function ({ api, event }) {
         const threadInfo = await api.getThreadInfo(threadID);
         const user = threadInfo.userInfo.find(user => user.id === senderID);
 
-        let responseArray;
+        let responseArray = [];
 
         if (senderID === botOwnerID) {
           responseArray = emojiResponses[emoji]["OWNER"];
-        } else if (user) {
-          if (user.gender === 2) {
-            responseArray = emojiResponses[emoji]["FEMALE"];
-          } else {
-            responseArray = emojiResponses[emoji]["MALE"];
-          }
-        } else {
+        } else if (user && user.gender === 2) { // Female
+          responseArray = emojiResponses[emoji]["FEMALE"];
+        } else if (user && user.gender === 1) { // Male
           responseArray = emojiResponses[emoji]["MALE"];
+        } else {
+          responseArray = emojiResponses[emoji]["MALE"]; // Default to Male responses
         }
 
-        if (responseArray) {
+        if (responseArray.length > 0) {
           const randomResponse = responseArray[Math.floor(Math.random() * responseArray.length)];
           api.sendMessage(randomResponse, threadID, messageID);
         }
