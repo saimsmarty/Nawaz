@@ -1,15 +1,15 @@
 module.exports = {
   config: {
     name: "linkAutoDownload",
-    version: "1.3.1",
+    version: "1.3.3",
     hasPermssion: 0,
     credits: "Nawaz Boss",
-    description: "Automatically detects links in messages and downloads the file.",
+    description: "Auto-downloads videos from links like Instagram, YouTube, Pinterest, etc.",
     commandCategory: "Utilities",
     usages: "",
     cooldowns: 5,
   },
-  
+
   run: async function ({ events, args }) {},
 
   handleEvent: async function ({ api, event }) {
@@ -23,16 +23,30 @@ module.exports = {
     try {
       api.setMessageReaction("⏳", event.messageID, () => {}, true);
 
-      // लिंक से वीडियो डाउनलोड करने की कोशिश
+      // लिंक से वीडियो डेटा लाना
       const data = await alldown(content);
       if (!data || !data.data) {
         return api.sendMessage("⚠ वीडियो डाउनलोड करने में समस्या आई!", event.threadID, event.messageID);
       }
 
-      const { high, title } = data.data;
+      let { high, title } = data.data;
+
+      // टाइटल सही से सेट करना
+      if (!title || title.trim() === "") {
+        if (content.includes("youtube.com") || content.includes("youtu.be")) {
+          title = "YouTube Video 🎥";
+        } else if (content.includes("instagram.com")) {
+          title = "Instagram Video 📷";
+        } else if (content.includes("pinterest.com")) {
+          title = "Pinterest Video 📌";
+        } else {
+          title = "नाम उपलब्ध नहीं ❌";
+        }
+      }
+
       const filePath = `${__dirname}/cache/auto.mp4`;
 
-      // वीडियो डाउनलोड करना
+      // वीडियो डाउनलोड
       const videoBuffer = (await axios.get(high, { responseType: "arraybuffer" })).data;
       fs.writeFileSync(filePath, Buffer.from(videoBuffer, "utf-8"));
 
