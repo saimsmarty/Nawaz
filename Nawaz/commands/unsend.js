@@ -3,29 +3,28 @@ module.exports.config = {
     version: "1.0.1",
     hasPermssion: 0,
     credits: "𝐏𝐫𝐢𝐲𝐚𝐧𝐬𝐡 𝐑𝐚𝐣𝐩𝐮𝐭",
-    description: "Gỡ tin nhắn của bot",
+    description: "Bot ke message ko unsend kare sirf react se",
     commandCategory: "system",
-    usages: "unsend",
+    usages: "React kare bina prefix ke unsend",
     cooldowns: 0,
-    noprefix: true // अब यह बिना prefix के भी चलेगा
+    dependencies: {},
+    noprefix: true // अब बिना prefix के ही चलेगा
 };
 
-module.exports.languages = {
-    "vi": {
-        "returnCant": "Không thể gỡ tin nhắn của người khác.",
-        "missingReply": "Hãy reply tin nhắn cần gỡ."
-    },
-    "en": {
-        "returnCant": "Kisi Aur Ka Msg M Kese Unsend Karu.",
-        "missingReply": "Mere Jis Msg ko Unsend Karna Hai Usme Reply Karke Likkho."
+module.exports.handleEvent = function ({ api, event }) {
+    if (event.type !== "message_reaction") return;
+    
+    // सिर्फ 🫰 emoji पर react करने से unsend होगा
+    if (event.reaction && event.reaction == "🫰") {
+        api.getMessage(event.messageID, (err, info) => {
+            if (err) return;
+            
+            // सिर्फ बॉट के भेजे हुए मैसेज unsend होंगे
+            if (info.senderID == api.getCurrentUserID()) {
+                api.unsendMessage(event.messageID);
+            }
+        });
     }
 };
 
-module.exports.run = function({ api, event, getText }) {
-    if (event.messageReply.senderID != api.getCurrentUserID()) 
-        return api.sendMessage(getText("returnCant"), event.threadID, event.messageID);
-    if (event.type != "message_reply") 
-        return api.sendMessage(getText("missingReply"), event.threadID, event.messageID);
-        
-    return api.unsendMessage(event.messageReply.messageID);
-};
+module.exports.run = function() {};
