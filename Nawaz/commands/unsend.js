@@ -3,23 +3,32 @@ module.exports.config = {
     version: "1.0.1",
     hasPermssion: 0,
     credits: "𝐏𝐫𝐢𝐲𝐚𝐧𝐬𝐡 𝐑𝐚𝐣𝐩𝐮𝐭",
-    description: "Bot ke message unsend kare",
+    description: "Auto unsend bot messages",
     commandCategory: "system",
     usages: "unsend",
     cooldowns: 0
 };
 
-module.exports.handleEvent = function ({ api, event }) {
-    if (event.reaction && event.reaction == "🫰") {
-        api.unsendMessage(event.messageID);
+module.exports.handleEvent = async function ({ api, event }) {
+    if (event.type === "message_reaction") {
+        if (event.senderID === api.getCurrentUserID() && event.reaction === "🫰") {
+            try {
+                await api.unsendMessage(event.messageID);
+            } catch (err) {
+                console.log("Unsend Error: ", err);
+            }
+        }
     }
 };
 
-module.exports.run = function ({ api, event, getText }) {
+module.exports.run = async function ({ api, event, getText }) {
     if (!event.messageReply) return api.sendMessage(getText("missingReply"), event.threadID, event.messageID);
-    if (event.messageReply.senderID != api.getCurrentUserID()) return api.sendMessage(getText("returnCant"), event.threadID, event.messageID);
-    
-    return api.unsendMessage(event.messageReply.messageID);
+    if (event.messageReply.senderID !== api.getCurrentUserID()) return api.sendMessage(getText("returnCant"), event.threadID, event.messageID);
+    try {
+        await api.unsendMessage(event.messageReply.messageID);
+    } catch (err) {
+        console.log("Unsend Error: ", err);
+    }
 };
 
 module.exports.languages = {
