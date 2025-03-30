@@ -1,8 +1,8 @@
 module.exports.config = {
     name: "unsend",
-    version: "3.0.0",
+    version: "3.1.0",
     hasPermssion: 0,
-    credits: "Priyansh Rajput (Modified by Nawaz Boss)",
+    credits: "Priyansh Rajput ",
     description: "React 🫰 se Auto Unsend kare bot ke messages.",
     commandCategory: "system",
     usages: "Just react 🫰 to bot messages to unsend them.",
@@ -10,16 +10,16 @@ module.exports.config = {
 };
 
 module.exports.handleEvent = async function ({ api, event }) {
-    if (event.type !== "message_reaction") return; // सिर्फ reaction event को allow करना
-    const { messageID, threadID, reaction, userID } = event;
+    if (event.type !== "message_reaction") return;
+    const { messageID, reaction, userID } = event;
 
-    if (reaction !== "🫰") return; // अगर reaction 🫰 नहीं है तो कुछ मत करो
+    
+    if (reaction !== "🫰") return;
 
     try {
+       
         api.getMessageInfo(messageID, (err, info) => {
             if (err) return console.error(err);
-            
-            // सिर्फ बॉट के भेजे गए मैसेज ही हटाएंगे
             if (info.senderID === api.getCurrentUserID()) {
                 api.unsendMessage(messageID);
             }
@@ -29,4 +29,4 @@ module.exports.handleEvent = async function ({ api, event }) {
     }
 };
 
-module.exports.run = function() {};
+module.exports.run = function() {}; // Empty run function, क्योंकि सिर्फ Reaction से ही चलेगा
