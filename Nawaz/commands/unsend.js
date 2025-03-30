@@ -1,17 +1,25 @@
 module.exports.config = {
     name: "unsend",
-    version: "1.0.2",
+    version: "1.0.3",
     hasPermssion: 0,
     credits: "𝐏𝐫𝐢𝐲𝐚𝐧𝐬𝐡 𝐑𝐚𝐣𝐩𝐮𝐭 (Modified by Nawaz Boss)",
-    description: "React se ya reply se bot ke messages auto unsend kare",
+    description: "Bot ke messages ko unsend karne ka system (prefix/no-prefix/react)",
     commandCategory: "system",
-    usages: "React karo ya reply se unsend",
+    usages: "[Reply to bot's message] ya react 😂",
     cooldowns: 0
 };
 
+// No Prefix ke liye handleEvent use kiya gaya hai
 module.exports.handleEvent = function({ api, event }) {
     if (event.type === "message_reaction" && event.reaction === "😂") {
-        api.unsendMessage(event.messageID);
+        if (event.messageID) {
+            return api.unsendMessage(event.messageID);
+        }
+    }
+    if (event.body && (event.body.toLowerCase() === "uns" || event.body.toLowerCase() === "unsend")) {
+        if (event.messageReply && event.messageReply.senderID == api.getCurrentUserID()) {
+            return api.unsendMessage(event.messageReply.messageID);
+        }
     }
 };
 
