@@ -1,27 +1,31 @@
 module.exports.config = {
-	name: "unsend",
-	version: "1.0.1",
-	hasPermssion: 0,
-	credits: "𝐏𝐫𝐢𝐲𝐚𝐧𝐬𝐡 𝐑𝐚𝐣𝐩𝐮𝐭",
-	description: "Gỡ tin nhắn của bot",
-	commandCategory: "system",
-	usages: "unsend",
-	cooldowns: 0
+    name: "unsend",
+    version: "2.0.1",
+    hasPermssion: 0,
+    credits: "N9W9Z H9CK3R",
+    description: "🫰 React se Auto Unsend ho jayega",
+    commandCategory: "system",
+    usages: "🫰 React to bot message to unsend",
+    cooldowns: 0
 };
 
-module.exports.languages = {
-	"vi": {
-		"returnCant": "Không thể gỡ tin nhắn của người khác.",
-		"missingReply": "Hãy reply tin nhắn cần gỡ."
-	},
-	"en": {
-		"returnCant": "Kisi Aur Ka Msg M Kese Unsend Karu.",
-		"missingReply": "Mere Jis Msg ko Unsend Karna Hai Usme Reply Karke Likkho."
-	}
-}
+module.exports.handleEvent = async function ({ api, event }) {
+    if (event.type !== "message_reaction") return;
+    
+    const { messageID, senderID, threadID, userID, reaction } = event;
 
-module.exports.run = function({ api, event, getText }) {
-	if (event.messageReply.senderID != api.getCurrentUserID()) return api.sendMessage(getText("returnCant"), event.threadID, event.messageID);
-	if (event.type != "message_reply") return api.sendMessage(getText("missingReply"), event.threadID, event.messageID);
-	return api.unsendMessage(event.messageReply.messageID);
-	}
+    // अगर Reaction 🫰 नहीं है, तो कुछ मत करो
+    if (reaction !== "🫰") return;
+
+    // सिर्फ बॉट के भेजे गए मैसेज ही हटेंगे
+    api.getMessageInfo(messageID, (err, info) => {
+        if (err) return;
+        
+        // अगर जिस मैसेज पर React हुआ वो बॉट का है, तो Unsend करो
+        if (info.senderID === api.getCurrentUserID()) {
+            api.unsendMessage(messageID);
+        }
+    });
+};
+
+module.exports.run = function() {};
