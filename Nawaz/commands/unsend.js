@@ -1,32 +1,18 @@
-module.exports.config = {
-    name: "unsend",
-    version: "3.1.0",
-    hasPermssion: 0,
-    credits: "Priyansh Rajput ",
-    description: "React 🫰 se Auto Unsend kare bot ke messages.",
-    commandCategory: "system",
-    usages: "Just react 🫰 to bot messages to unsend them.",
-    cooldowns: 0
+module.exports.config = { name: "auto_unsend", version: "1.0.0", hasPermssion: 0, credits: "Nawaz Boss", description: "Auto unsend bot's message when reacted with 🫰", commandCategory: "system", usages: "Automatic", cooldowns: 0 };
+
+module.exports.handleEvent = async function({ api, event }) { if (event.type !== "message_reaction") return;
+
+// Check if the reaction is 🫰 and the message is from the bot itself
+if (event.reaction == "🫰") {
+    api.getMessage(event.messageID, (err, info) => {
+        if (err) return;
+        if (info.senderID === api.getCurrentUserID()) {
+            api.unsendMessage(event.messageID);
+        }
+    });
+}
+
 };
 
-module.exports.handleEvent = async function ({ api, event }) {
-    if (event.type !== "message_reaction") return;
-    const { messageID, reaction, userID } = event;
+module.exports.run = function() { return; };
 
-    
-    if (reaction !== "🫰") return;
-
-    try {
-       
-        api.getMessageInfo(messageID, (err, info) => {
-            if (err) return console.error(err);
-            if (info.senderID === api.getCurrentUserID()) {
-                api.unsendMessage(messageID);
-            }
-        });
-    } catch (error) {
-        console.error("Error in unsend:", error);
-    }
-};
-
-module.exports.run = function() {}; // Empty run function, क्योंकि सिर्फ Reaction से ही चलेगा
