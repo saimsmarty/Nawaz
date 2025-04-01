@@ -14,9 +14,9 @@ let responseArray = [];
 
     if (senderID === botOwnerID) {
       responseArray = emojiResponses[emoji]["OWNER"];
-    } else if (user && user.gender === 1) { // Male
+    } else if (user && user.gender === 2 || user && user.gender === "MALE") { // Male
       responseArray = emojiResponses[emoji]["MALE"];
-    } else if (user && user.gender === 2) { // Female
+    } else if (user && user.gender === 1 || user && user.gender === "FEMALE") { // Female
       responseArray = emojiResponses[emoji]["FEMALE"];
     } else {
       responseArray = emojiResponses[emoji]["MALE"]; // Default to Male responses
@@ -35,4 +35,3 @@ let responseArray = [];
 } };
 
 module.exports.run = function () {};
-
