@@ -12,8 +12,7 @@ module.exports.config = {
 };
 
 let isActive = false; // ✅ Default में बंद रहेगा
-const API_KEY = "nawaz-hacker"; // ✅ API Key
-const API_URL = "https://nawaz-hacker-api.onrender.com/api"; // ✅ Render API URL
+const API_URL = "https://priyansh-ai.onrender.com"; // ✅ Render API URL
 
 module.exports.handleEvent = async function ({ api, event }) {
     const { threadID, messageID, senderID, body, messageReply } = event;
@@ -33,8 +32,8 @@ module.exports.handleEvent = async function ({ api, event }) {
 
     // ✅ API कॉल
     try {
-        const response = await axios.get(`${API_URL}?message=${encodeURIComponent(userQuery)}&apikey=${API_KEY}`);
-        let botReply = response.data.response || "मुझे समझने में दिक्कत हो रही है। क्या आप इसे दोहरा सकते हैं?";
+        const response = await axios.get(`${API_URL}/api/blackbox?query=${encodeURIComponent(userQuery)}`);
+        let botReply = response.data.priyansh || "मुझे समझने में दिक्कत हो रही है। क्या आप इसे दोहरा सकते हैं?";
 
         return api.sendMessage({
             body: botReply,
