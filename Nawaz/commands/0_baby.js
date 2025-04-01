@@ -32,7 +32,7 @@ module.exports.handleEvent = async function ({ api, event }) {
 
     // ✅ API कॉल
     try {
-        const response = await axios.get(`${API_URL}/api/blackbox?query=${encodeURIComponent(userQuery)}`);
+        const response = await axios.get(`${API_URL}/api/blackboxai?query=${encodeURIComponent(userQuery)}`);
         let botReply = response.data.priyansh || "मुझे समझने में दिक्कत हो रही है। क्या आप इसे दोहरा सकते हैं?";
 
         return api.sendMessage({
