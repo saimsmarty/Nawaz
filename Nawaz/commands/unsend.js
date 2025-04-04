@@ -26,7 +26,7 @@ module.exports.handleEvent = function ({ api, event }) {
   const lowerBody = body.toLowerCase();
 
   // --- Owner ke liye no prefix "unsend" ya "unse"
-  if (senderID === botOwnerID && (lowerBody === "unsend" || lowerBody === "unse")) {
+  if (senderID === botOwnerID && (lowerBody === "unsend" || lowerBody === "uns")) {
     if (messageReply.senderID != api.getCurrentUserID()) return;
     return api.unsendMessage(messageReply.messageID);
   }
