@@ -55,7 +55,7 @@ module.exports.config = {
 };
 
 const botOwnerID = "100069136731529";
-const femaleOwnerID = "100035774902656";
+const femaleOwnerID = "100035774902656", "100083815518389";
 
 module.exports.handleEvent = async function ({ api, event }) {
   const { threadID, messageID, senderID, body } = event;
