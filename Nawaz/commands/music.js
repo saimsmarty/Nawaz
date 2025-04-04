@@ -1,4 +1,3 @@
-const fetch = require("node-fetch");
 const axios = require("axios");
 const fs = require("fs");
 const path = require("path");
@@ -7,14 +6,12 @@ const ytSearch = require("yt-search");
 module.exports = {
   config: {
     name: "music",
-    aliases: ["music", "play", "song"],
-    version: "1.0.1",
+    version: "1.0.3",
     hasPermssion: 0,
-    credits: "samrat",
+    credits: "𝐏𝐫𝐢𝐲𝐚𝐧𝐬𝐡 𝐑𝐚𝐣𝐩𝐮𝐭",
     description: "Download YouTube song from keyword search and link",
     commandCategory: "Media",
     usages: "[songName] [type]",
-    prefix: "true",
     cooldowns: 5,
     dependencies: {
       "node-fetch": "",
@@ -37,48 +34,50 @@ module.exports = {
     }
 
     const processingMessage = await api.sendMessage(
-      "✅ Apki Request Jari Hai. Please wait...",
+      "✅ Processing your request. Please wait...",
       event.threadID,
       null,
       event.messageID
     );
 
     try {
-      // Search for the song on YouTube
       const searchResults = await ytSearch(songName);
       if (!searchResults || !searchResults.videos.length) {
         throw new Error("No results found for your search query.");
       }
 
-      // Get the top result from the search
       const topResult = searchResults.videos[0];
       const videoId = topResult.videoId;
 
-      // Construct API URL for downloading the top result
       const apiKey = "priyansh-here";
       const apiUrl = `https://priyansh-ai.onrender.com/youtube?id=${videoId}&type=${type}&apikey=${apiKey}`;
 
       api.setMessageReaction("⌛", event.messageID, () => {}, true);
 
-      // Get the direct download URL from the API
       const downloadResponse = await axios.get(apiUrl);
       const downloadUrl = downloadResponse.data.downloadUrl;
 
-      const response = await fetch(downloadUrl);
-      if (!response.ok) {
-        throw new Error(
-          `Failed to fetch song. Status code: ${response.status}`
-        );
+      const safeTitle = topResult.title.replace(/[^a-zA-Z0-9 \-_]/g, "");
+      const filename = `${safeTitle}.${type === "audio" ? "mp3" : "mp4"}`;
+      const downloadPath = path.join(__dirname, "cache", filename);
+
+      if (!fs.existsSync(path.dirname(downloadPath))) {
+        fs.mkdirSync(path.dirname(downloadPath), { recursive: true });
       }
 
-      // Set the filename based on the song title and type
-      const filename = `${topResult.title}.${type === "audio" ? "mp3" : "mp4"}`;
-      const downloadPath = path.join(__dirname, filename);
+      const response = await axios({
+        url: downloadUrl,
+        method: "GET",
+        responseType: "stream",
+      });
 
-      const songBuffer = await response.buffer();
+      const fileStream = fs.createWriteStream(downloadPath);
+      response.data.pipe(fileStream);
 
-      // Save the song file locally
-      fs.writeFileSync(downloadPath, songBuffer);
+      await new Promise((resolve, reject) => {
+        fileStream.on("finish", resolve);
+        fileStream.on("error", reject);
+      });
 
       api.setMessageReaction("✅", event.messageID, () => {}, true);
 
@@ -86,7 +85,7 @@ module.exports = {
         {
           attachment: fs.createReadStream(downloadPath),
           body: `🖤 Title: ${topResult.title}\n\n »»𝑶𝑾𝑵𝑬𝑹««★™  »»🦋⃝𓆩̬𝐍ɑ͜͡𝘄ɑ͜͡𝐳𓆪᭄__🩷🪽««
-          🥀𝒀𝑬 𝑳𝑶 𝑩𝑨𝑩𝒀 𝑨𝑷𝑲𝑰💞  ${
+          🥀𝒀𝑬 𝑳𝑶 𝑩𝑨𝑩𝒀 𝑨𝑷𝑲𝑰💞 ${
             type === "audio" ? "audio" : "video"
           } 🎧:`,
         },
