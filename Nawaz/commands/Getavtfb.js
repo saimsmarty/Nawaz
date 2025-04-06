@@ -4,33 +4,43 @@ const fs = require("fs-extra");
 module.exports = {
   config: {
     name: "setavt",
+    aliases: ["changeavt", "setavatar"],
     version: "1.0",
-    author: "Nawaz Boss",
+    author: "Modified By Nawaz Boss",
+    countDown: 5,
     role: 2,
-    shortDescription: "बोट का प्रोफाइल फोटो बदलो",
-    longDescription: "Bot का Avatar (Profile Pic) बदलो",
+    shortDescription: {
+      en: "Change bot avatar"
+    },
+    longDescription: {
+      en: "Change bot's profile picture using image URL or replying image"
+    },
     category: "owner",
-    guide: "{pn} reply करके photo भेजो या link दो"
+    guide: {
+      en: "{pn} [image url] | Reply to image"
+    }
   },
 
-  onStart: async function ({ api, event, args }) {
-    let imageUrl = args[0] || event.messageReply?.attachments[0]?.url;
+  onStart: async function ({ api, event, args, message }) {
+    const imageURL = (args[0] || "").startsWith("http") ? args[0] : event.messageReply?.attachments[0]?.url;
 
-    if (!imageUrl)
-      return api.sendMessage("⚠️ फोटो का लिंक दो या reply करके फोटो भेजो।", event.threadID, event.messageID);
+    if (!imageURL)
+      return message.reply("Please provide image url or reply to any image!");
 
     try {
-      const res = await axios.get(imageUrl, { responseType: "arraybuffer" });
-      const path = __dirname + "/tmp/avatar.jpg";
-      fs.writeFileSync(path, Buffer.from(res.data, "binary"));
+      const response = await axios.get(imageURL, { responseType: "arraybuffer" });
+
+      const path = __dirname + "/cache/avatar.png";
+      fs.writeFileSync(path, Buffer.from(response.data, "binary"));
 
       await api.changeAvatar(fs.createReadStream(path));
+
       fs.unlinkSync(path);
 
-      api.sendMessage("✅ बोट का प्रोफाइल फोटो बदल दिया गया!", event.threadID, event.messageID);
-    } catch (e) {
-      console.log(e);
-      api.sendMessage("❌ फोटो लेने में दिक्कत आ गई। Valid link या सही reply करो।", event.threadID, event.messageID);
+      message.reply("✅ | Bot avatar changed successfully!");
+    } catch (err) {
+      console.log(err);
+      message.reply("❌ | Failed to change avatar.");
     }
   }
 };
