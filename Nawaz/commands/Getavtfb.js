@@ -6,41 +6,39 @@ module.exports = {
     name: "setavt",
     aliases: ["changeavt", "setavatar"],
     version: "1.0",
-    author: "Modified By Nawaz Boss",
-    countDown: 5,
+    author: "Converted by NawazBoss",
     role: 2,
-    shortDescription: {
-      en: "Change bot avatar"
-    },
-    longDescription: {
-      en: "Change bot's profile picture using image URL or replying image"
-    },
+    shortDescription: "Change bot profile picture",
+    longDescription: "Change the avatar/profile picture of the bot",
     category: "owner",
-    guide: {
-      en: "{pn} [image url] | Reply to image"
-    }
+    guide: "{pn} reply to image or {pn} imageURL"
   },
 
-  onStart: async function ({ api, event, args, message }) {
-    const imageURL = (args[0] || "").startsWith("http") ? args[0] : event.messageReply?.attachments[0]?.url;
+  onStart: async function ({ api, event, args }) {
+    const { threadID, messageID, senderID, type, messageReply } = event;
 
-    if (!imageURL)
-      return message.reply("Please provide image url or reply to any image!");
+    let imagePath = __dirname + `/cache/avatar.jpg`;
 
-    try {
-      const response = await axios.get(imageURL, { responseType: "arraybuffer" });
+    if (messageReply && messageReply.attachments.length > 0) {
+      const attachment = messageReply.attachments[0];
+      if (attachment.type === "photo") {
+        const url = attachment.url;
+        const response = await axios.get(url, { responseType: "arraybuffer" });
+        fs.writeFileSync(imagePath, Buffer.from(response.data, "utf-8"));
+      } else return api.sendMessage("Reply image only.", threadID, messageID);
+    } else if (args[0]) {
+      try {
+        const response = await axios.get(args[0], { responseType: "arraybuffer" });
+        fs.writeFileSync(imagePath, Buffer.from(response.data, "utf-8"));
+      } catch {
+        return api.sendMessage("Invalid Image URL.", threadID, messageID);
+      }
+    } else return api.sendMessage("Reply image or provide image URL.", threadID, messageID);
 
-      const path = __dirname + "/cache/avatar.png";
-      fs.writeFileSync(path, Buffer.from(response.data, "binary"));
-
-      await api.changeAvatar(fs.createReadStream(path));
-
-      fs.unlinkSync(path);
-
-      message.reply("✅ | Bot avatar changed successfully!");
-    } catch (err) {
-      console.log(err);
-      message.reply("❌ | Failed to change avatar.");
-    }
+    api.changeAvatar(fs.createReadStream(imagePath), err => {
+      if (err) return api.sendMessage("Failed to change avatar.", threadID, messageID);
+      fs.unlinkSync(imagePath);
+      return api.sendMessage("Bot Avatar Changed Successfully!", threadID, messageID);
+    });
   }
 };
