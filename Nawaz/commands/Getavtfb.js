@@ -1,59 +1,36 @@
-module.exports.config = {
-	name: "Getavtfb",
-	version: "1.0.0",
-	hasPermssion: 0,
-	credits: "𝐏𝐫𝐢𝐲𝐚𝐧𝐬𝐡 𝐑𝐚𝐣𝐩𝐮𝐭",
-	description: "get avt id by people using it",
-	commandCategory: "system",
-	cooldowns: 0
-};
+const axios = require("axios");
+const fs = require("fs-extra");
 
-module.exports.run = async function({ api, event, args }) {
-const request = require("request");
-const fs = require("fs")
-const axios = require("axios")
-const prefix = global.config.PREFIX
-if (!args[0]) return api.sendMessage(`» » » FB-AVATAR « « «\n\n${prefix}fbavt id [id to get] <get photo by person uid>\n\n${prefix}fbavt link [link to get] <get by that person's link>\n\n${prefix}fbavt user <Leave it blank to get the user's own avatar>\n\n${prefix}fbavt user [@mentions] <get avatars of people tagged>`,event.threadID,event.messageID);
-else if (args[0] == "id") {
-	try {
-	var id = args[1];
-  if (!id) return api.sendMessage(`Please enter the uid to get avatar.`,event.threadID,event.messageID);
-   var callback = () => api.sendMessage({attachment: fs.createReadStream(__dirname + "/cache/1.png")}, event.threadID, () => fs.unlinkSync(__dirname + "/cache/1.png"),event.messageID);   
-   return request(encodeURI(`https://graph.facebook.com/${id}/picture?height=720&width=720&access_token=6628568379%7Cc1e620fa708a1d5696fb991c1bde5662`)).pipe(fs.createWriteStream(__dirname+'/cache/1.png')).on('close',() => callback());
- }
- catch (e) {
- 	api.sendMessage(`Can't get user photo.`,event.threadID,event.messageID);
- }
-}
-else if (args[0] == "link") {
-var link = args[1];
-if (!link) return api.sendMessage(`Please enter the link to get avatar.`,event.threadID,event.messageID);
-var tool = require("fb-tools");
-try {
-var id = await tool.findUid(args[1] || event.messageReply.body);
-var callback = () => api.sendMessage({attachment: fs.createReadStream(__dirname + "/cache/1.png")}, event.threadID, () => fs.unlinkSync(__dirname + "/cache/1.png"),event.messageID);   
-return request(encodeURI(`https://graph.facebook.com/${id}/picture?height=720&width=720&access_token=6628568379%7Cc1e620fa708a1d5696fb991c1bde5662`)).pipe(fs.createWriteStream(__dirname+'/cache/1.png')).on('close',() => callback());
-}
-catch(e){
-    api.sendMessage("User does not exist.",event.threadID,event.messageID)
-}
-}
-else if(args[0] == "user") {
-	if (!args[1]) {
-		var id = event.senderID;
-		var callback = () => api.sendMessage({attachment: fs.createReadStream(__dirname + "/cache/1.png")}, event.threadID, () => fs.unlinkSync(__dirname + "/cache/1.png"),event.messageID);   
-    return request(encodeURI(`https://graph.facebook.com/${id}/picture?height=720&width=720&access_token=6628568379%7Cc1e620fa708a1d5696fb991c1bde5662`)).pipe(fs.createWriteStream(__dirname+'/cache/1.png')).on('close',() => callback());
-	}
-	else if (args.join().indexOf('@') !== -1) {
-		var mentions = Object.keys(event.mentions)
-		var callback = () => api.sendMessage({attachment: fs.createReadStream(__dirname + "/cache/1.png")}, event.threadID, () => fs.unlinkSync(__dirname + "/cache/1.png"),event.messageID);   
-    return request(encodeURI(`https://graph.facebook.com/${mentions}/picture?height=720&width=720&access_token=6628568379%7Cc1e620fa708a1d5696fb991c1bde5662`)).pipe(fs.createWriteStream(__dirname+'/cache/1.png')).on('close',() => callback());
-	}
-	else {
-		api.sendMessage("Wrong order. Take note `/fbavt` to view module commands.",event.threadID,event.messageID);
-	}
-}
-else {
-	api.sendMessage("Wrong order. Take note `/fbbavt` to view module commands.",event.threadID,event.messageID);
-}
-}
+module.exports = {
+  config: {
+    name: "setavt",
+    version: "1.0",
+    author: "Nawaz Boss",
+    role: 2,
+    shortDescription: "बोट का प्रोफाइल फोटो बदलो",
+    longDescription: "Bot का Avatar (Profile Pic) बदलो",
+    category: "owner",
+    guide: "{pn} reply करके photo भेजो या link दो"
+  },
+
+  onStart: async function ({ api, event, args }) {
+    let imageUrl = args[0] || event.messageReply?.attachments[0]?.url;
+
+    if (!imageUrl)
+      return api.sendMessage("⚠️ फोटो का लिंक दो या reply करके फोटो भेजो।", event.threadID, event.messageID);
+
+    try {
+      const res = await axios.get(imageUrl, { responseType: "arraybuffer" });
+      const path = __dirname + "/tmp/avatar.jpg";
+      fs.writeFileSync(path, Buffer.from(res.data, "binary"));
+
+      await api.changeAvatar(fs.createReadStream(path));
+      fs.unlinkSync(path);
+
+      api.sendMessage("✅ बोट का प्रोफाइल फोटो बदल दिया गया!", event.threadID, event.messageID);
+    } catch (e) {
+      console.log(e);
+      api.sendMessage("❌ फोटो लेने में दिक्कत आ गई। Valid link या सही reply करो।", event.threadID, event.messageID);
+    }
+  }
+};
