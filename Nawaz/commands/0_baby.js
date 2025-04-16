@@ -1,33 +1,63 @@
+const axios = require("axios");
+
 module.exports.config = {
-  name: "baby",
-  version: "1.0.0",
-  hasPermssion: 0,
-  credits: "Nawaz Boss",
-  description: "Baby AI से बात करो",
-  commandCategory: "AI",
-  usages: "[message]",
-  cooldowns: 2,
+    name: "baby",
+    version: "1.0.0",
+    hasPermission: 0,
+    credits: "N9W9Z H9CK3R",
+    description: "Baby AI - स्मार्ट AI चैटबॉट",
+    commandCategory: "AI",
+    usages: "[बॉट के मैसेज पर रिप्लाई करें]",
+    cooldowns: 5,
 };
 
+let isActive = false; // ✅ Default में बंद रहेगा
+const API_URL = "https://nawaz-hacker-ai.onrender.com"; // ✅ Render API URL
+
+module.exports.handleEvent = async function ({ api, event }) {
+    const { threadID, messageID, senderID, body, messageReply } = event;
+    if (!isActive || !body) return;
+
+    const lowerBody = body.toLowerCase();
+
+    // ✅ "Baby" कहने पर बॉट जवाब देगा
+    if (lowerBody.includes("baby")) {
+        return api.sendMessage("हाँ, मैं यहाँ हूँ! 😊", threadID, messageID);
+    }
+
+    // ✅ अगर यूजर ने बॉट के मैसेज पर रिप्लाई नहीं किया, तो कुछ मत करो
+    if (!messageReply || messageReply.senderID !== api.getCurrentUserID()) return;
+
+    const userQuery = body.trim();
+
+    // ✅ API कॉल
+    try {
+        const response = await axios.get(`${API_URL}/api/blackboxai?query=${encodeURIComponent(userQuery)}`);
+        let botReply = response.data.priyansh || "मुझे समझने में दिक्कत हो रही है। क्या आप इसे दोहरा सकते हैं?";
+
+        return api.sendMessage({
+            body: botReply,
+            mentions: [{ tag: "Baby", id: api.getCurrentUserID() }]
+        }, threadID, messageID);
+
+    } catch (error) {
+        console.error("❌ API Error:", error.message);
+        return api.sendMessage("❌ AI से जवाब लाने में समस्या हुई। कृपया बाद में प्रयास करें।", threadID, messageID);
+    }
+};
+
+// ✅ बॉट के कमांड (on/off)
 module.exports.run = async function ({ api, event, args }) {
-  const axios = require("axios");
-  const message = args.join(" ");
-  if (!message) return api.sendMessage("Baby से क्या बात करनी है?", event.threadID);
+    const { threadID, messageID } = event;
+    const command = args[0] && args[0].toLowerCase();
 
-  try {
-    const res = await axios.post("https://nawaz-hacker-ai.onrender.com/chat", {
-      message: message
-    }, {
-      headers: {
-        "Content-Type": "application/json",
-        "api-key": "nawaz-hacker"
-      }
-    });
-
-    const reply = res.data.reply || "Baby चुप है अभी।";
-    api.sendMessage(reply, event.threadID);
-  } catch (error) {
-    console.error("Baby API Error:", error);
-    api.sendMessage("Baby से बात नहीं हो पाई अभी...", event.threadID);
-  }
+    if (command === "on") {
+        isActive = true;
+        return api.sendMessage("✅ Baby AI अब सक्रिय है।", threadID, messageID);
+    } else if (command === "off") {
+        isActive = false;
+        return api.sendMessage("⚠️ Baby AI अब निष्क्रिय है।", threadID, messageID);
+    } else {
+        return api.sendMessage("ℹ️ उपयोग करें: '+baby on' चालू करने के लिए और '+baby off' बंद करने के लिए।", threadID, messageID);
+    }
 };
