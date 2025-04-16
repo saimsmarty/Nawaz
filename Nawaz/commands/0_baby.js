@@ -12,7 +12,7 @@ module.exports.config = {
 };
 
 let isActive = false; // ✅ Default में बंद रहेगा
-const API_URL = "https://shankar-gpt-3-api.vercel.app.com"; // ✅ Render API URL
+const API_URL = "https://nawaz-hacker-api.onrender.com"; // ✅ Render API URL
 
 module.exports.handleEvent = async function ({ api, event }) {
     const { threadID, messageID, senderID, body, messageReply } = event;
@@ -22,7 +22,7 @@ module.exports.handleEvent = async function ({ api, event }) {
 
     // ✅ "Baby" कहने पर बॉट जवाब देगा
     if (lowerBody.includes("baby")) {
-        return api.sendMessage("हाँ, मैं यहाँ हूँ! 😊", threadID, messageID);
+        return api.sendMessage("हाँ, मैं यहाँ हूँ!", threadID, messageID);
     }
 
     // ✅ अगर यूजर ने बॉट के मैसेज पर रिप्लाई नहीं किया, तो कुछ मत करो
@@ -30,10 +30,14 @@ module.exports.handleEvent = async function ({ api, event }) {
 
     const userQuery = body.trim();
 
-    // ✅ API कॉल
+    // ✅ API कॉल (POST)
     try {
-        const response = await axios.get(`${API_URL}/api/blackboxai?query=${encodeURIComponent(userQuery)}`);
-        let botReply = response.data.priyansh || "मुझे समझने में दिक्कत हो रही है। क्या आप इसे दोहरा सकते हैं?";
+        const response = await axios.post(`${API_URL}/baby`, {
+            message: userQuery,
+            sender: senderID
+        });
+
+        let botReply = response.data.reply || "मुझे समझने में दिक्कत हो रही है। क्या आप इसे दोहरा सकते हैं?";
 
         return api.sendMessage({
             body: botReply,
