@@ -12,7 +12,7 @@ module.exports.config = {
 };
 
 let isActive = false; // ✅ Default में बंद रहेगा
-const API_URL = "https://nawaz-hacker-api.onrender.com"; // ✅ Render API URL
+const API_URL = "https://shankar-gpt-3-api.vercel.app.com"; // ✅ Render API URL
 
 module.exports.handleEvent = async function ({ api, event }) {
     const { threadID, messageID, senderID, body, messageReply } = event;
