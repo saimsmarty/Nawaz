@@ -1,108 +1,120 @@
 const coindown = 50;
-const fs = require("fs-extra");
-const path = require("path");
-const axios = require("axios");
-const jimp = require("jimp");
 
 module.exports.config = {
-    name: "pairv9",
-    version: "1.0.1",
-    hasPermssion: 0,
-    credits: "N9W9Z H9CK3R",
-    description: "pair family",
-    commandCategory: "love",
-    cooldowns: 5,
-    dependencies: {
-        "axios": "",
-        "fs-extra": "",
-        "jimp": ""
-    }
+  name: "pairv9",
+  version: "1.0.1",
+  hasPermssion: 0,
+  credits: "MR CHAND | Fixed by Nawaz Boss",
+  description: "pair family",
+  commandCategory: "love",
+  cooldowns: 5,
+  dependencies: {
+    "axios": "",
+    "fs-extra": "",
+    "jimp": ""
+  }
 };
 
 module.exports.onLoad = async () => {
-    const dir = path.join(__dirname, 'cache/canvas');
-    const filePath = path.join(dir, 'araa.jpg');
+  const { existsSync, mkdirSync, writeFileSync } = require("fs-extra");
+  const path = require("path");
+  const axios = require("axios");
 
-    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+  const dir = path.join(__dirname, "cache", "canvas");
+  const imgPath = path.join(dir, "araa.jpg");
 
-    if (!fs.existsSync(filePath)) {
-        const response = await axios.get("https://imgur.com/D35mTwa.jpg", { responseType: "arraybuffer" });
-        fs.writeFileSync(filePath, response.data);
+  if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
+  if (!existsSync(imgPath)) {
+    try {
+      const res = await axios.get("https://i.imgur.com/D35mTwa.jpg", { responseType: "arraybuffer" });
+      writeFileSync(imgPath, Buffer.from(res.data, "utf-8"));
+      console.log("araa.jpg downloaded successfully.");
+    } catch (e) {
+      console.log("Failed to download araa.jpg:", e);
     }
+  }
 };
 
 async function circle(image) {
-    image = await jimp.read(image);
-    image.circle();
-    return await image.getBufferAsync("image/png");
+  const jimp = require("jimp");
+  image = await jimp.read(image);
+  image.circle();
+  return await image.getBufferAsync("image/png");
 }
 
 async function makeImage({ one, two, three }) {
-    const __root = path.join(__dirname, "cache/canvas");
+  const fs = require("fs-extra");
+  const path = require("path");
+  const axios = require("axios");
+  const jimp = require("jimp");
 
-    const pairing_img = await jimp.read(__root + "/araa.jpg");
+  const __root = path.resolve(__dirname, "cache", "canvas");
+  const bgPath = path.join(__root, "araa.jpg");
+  const output = path.join(__root, `araa_${one}_${two}_${three}.png`);
 
-    const avatarOne = path.join(__root, `avt_${one}.png`);
-    const avatarTwo = path.join(__root, `avt_${two}.png`);
-    const avatarThree = path.join(__root, `avt_${three}.png`);
+  const avt1Path = path.join(__root, `avt_${one}.png`);
+  const avt2Path = path.join(__root, `avt_${two}.png`);
+  const avt3Path = path.join(__root, `avt_${three}.png`);
 
-    const getAvatar = async (id, filePath) => {
-        const response = await axios.get(`https://graph.facebook.com/${id}/picture?width=512&height=512&access_token=6628568379%7Cc1e620fa708a1d5696fb991c1bde5662`, { responseType: 'arraybuffer' });
-        fs.writeFileSync(filePath, Buffer.from(response.data, 'utf-8'));
-    };
+  const avtURL = id => `https://graph.facebook.com/${id}/picture?width=512&height=512&access_token=6628568379%7Cc1e620fa708a1d5696fb991c1bde5662`;
 
-    await getAvatar(one, avatarOne);
-    await getAvatar(two, avatarTwo);
-    await getAvatar(three, avatarThree);
+  fs.writeFileSync(avt1Path, (await axios.get(avtURL(one), { responseType: "arraybuffer" })).data);
+  fs.writeFileSync(avt2Path, (await axios.get(avtURL(two), { responseType: "arraybuffer" })).data);
+  fs.writeFileSync(avt3Path, (await axios.get(avtURL(three), { responseType: "arraybuffer" })).data);
 
-    const circleOne = await jimp.read(await circle(avatarOne));
-    const circleTwo = await jimp.read(await circle(avatarTwo));
-    const circleThree = await jimp.read(await circle(avatarThree));
+  const bg = await jimp.read(bgPath);
+  const avatar1 = await jimp.read(await circle(avt1Path));
+  const avatar2 = await jimp.read(await circle(avt2Path));
+  const avatar3 = await jimp.read(await circle(avt3Path));
 
-    pairing_img
-        .composite(circleOne.resize(65, 65), 135, 260)
-        .composite(circleTwo.resize(65, 65), 230, 210)
-        .composite(circleThree.resize(60, 60), 193, 370);
+  bg.composite(avatar1.resize(65, 65), 135, 260)
+    .composite(avatar2.resize(65, 65), 230, 210)
+    .composite(avatar3.resize(60, 60), 193, 370);
 
-    const finalPath = path.join(__root, `final_${Date.now()}.png`);
-    const raw = await pairing_img.getBufferAsync("image/png");
-    fs.writeFileSync(finalPath, raw);
+  const buffer = await bg.getBufferAsync("image/png");
+  fs.writeFileSync(output, buffer);
 
-    [avatarOne, avatarTwo, avatarThree].forEach(file => fs.unlinkSync(file));
-    return finalPath;
+  fs.unlinkSync(avt1Path);
+  fs.unlinkSync(avt2Path);
+  fs.unlinkSync(avt3Path);
+
+  return output;
 }
 
 module.exports.run = async function ({ api, event, args, Users, Threads, Currencies }) {
-    const { threadID, messageID, senderID } = event;
-    const userData = await Currencies.getData(senderID);
-    let balance = userData.money || 0;
+  const fs = require("fs-extra");
+  const axios = require("axios");
+  const { threadID, messageID, senderID } = event;
 
-    if (balance < coindown) {
-        return api.sendMessage(`❤️ NEED ✅${coindown} COINS BUT YOU HAVE ✅${balance} COIN. PLEASE EARN COINS AND THEN USE THIS COMMAND ❤️`, threadID, messageID);
-    }
+  let balance = (await Currencies.getData(senderID)).money;
+  if (balance < coindown) {
+    return api.sendMessage(`❤️ NEED 50 COINS BUT YOU HAVE ${balance || 0} COINS. PLEASE EARN FIRST ❤️`, threadID, messageID);
+  }
 
-    await Currencies.decreaseMoney(senderID, coindown);
+  await Currencies.decreaseMoney(senderID, coindown);
 
-    let info = await api.getUserInfo(senderID);
-    let nameSender = info[senderID].name;
-    let arraytag = [{ id: senderID, tag: nameSender }];
+  let threadInfo = await api.getThreadInfo(threadID);
+  let members = threadInfo.participantIDs;
+  members = members.filter(id => id != senderID);
 
-    let threadInfo = await api.getThreadInfo(threadID);
-    let memberIDs = threadInfo.participantIDs;
-    memberIDs = memberIDs.filter(id => id !== senderID);
+  let r1 = members[Math.floor(Math.random() * members.length)];
+  let r2 = members[Math.floor(Math.random() * members.length)];
 
-    let one = senderID;
-    let two = memberIDs[Math.floor(Math.random() * memberIDs.length)];
-    let three = memberIDs[Math.floor(Math.random() * memberIDs.length)];
+  let nameSender = (await Users.getData(senderID)).name;
+  let name1 = (await Users.getData(r1)).name;
+  let name2 = (await Users.getData(r2)).name;
 
-    let name1 = (await Users.getData(two)).name;
-    let name2 = (await Users.getData(three)).name;
+  let arraytag = [
+    { id: senderID, tag: nameSender },
+    { id: r1, tag: name1 },
+    { id: r2, tag: name2 }
+  ];
 
-    let imgPath = await makeImage({ one, two, three });
+  let imgPath = await makeImage({ one: senderID, two: r1, three: r2 });
 
-    return api.sendMessage({
-        body: `${nameSender} ✅ ${name1} ✅ ${name2}\n-${coindown} ❤️`,
-        mentions: arraytag,
-        attachment: fs.createReadStream(imgPath)
-    }, threadID, () => fs.unlinkSync(imgPath), messageID);
+  return api.sendMessage({
+    body: `💖 ${nameSender} + ${name1} + ${name2} 💖\n- ${coindown} coins used!`,
+    mentions: arraytag,
+    attachment: fs.createReadStream(imgPath)
+  }, threadID, () => fs.unlinkSync(imgPath), messageID);
 };
