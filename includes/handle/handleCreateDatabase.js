@@ -1,4 +1,3 @@
-
 module.exports = function ({ Users, Threads, Currencies }) {
     const logger =require("../../utils/log.js");
     return async function ({ event }) {
@@ -18,11 +17,6 @@ module.exports = function ({ Users, Threads, Currencies }) {
                 const dataThread = setting;
                 allThreadID.push(threadID)
                 threadInfo.set(threadID, dataThread);
-                var job = ["FF9900","FFFF33","33FFFF","FF99FF","FF3366","FFFF66","FF00FF","66FF99","00CCFF","FF0099","FF0066","008E97","F58220","38B6FF","7ED957","97FFFF","00BFFF","76EEC6","4EEE94","98F5FF","AFD788","00B2BF","9F79EE","00FA9A"];
-                const chalk = require('chalk');
-                var random = job[Math.floor(Math.random() * job.length)]      
-        var random1 = job[Math.floor(Math.random() * job.length)]
-        var random2 = job[Math.floor(Math.random() * job.length)]
                 const setting2 = {};
                 setting2.threadInfo = dataThread
                 setting2.data = {}
@@ -40,11 +34,10 @@ module.exports = function ({ Users, Threads, Currencies }) {
                             'data': {}
                         }), 
                         global.data.allUserID.push(String(singleData.id)), 
-                        global.data.allUserID.push(String(singleData.name)), 
-                        logger(global.getText('handleCreateDatabase', 'newUser', chalk.hex("#" + random)(`New user:  `) + chalk.hex("#" + random1)(`${singleData.name}`) + "  ||  " + chalk.hex("#" + random2)(`${singleData.id}`)), '[ USER ]'));
+                        logger(global.getText('handleCreateDatabase', 'newUser', singleData.id), '[ DATABASE ]'));
                     } catch(e) { console.log(e) };
                 }
-                logger(global.getText('handleCreateDatabase', 'newThread',chalk.hex("#" + random)(`New group: `) + chalk.hex("#" + random1)(`${threadID}`) + "  ||  " + chalk.hex("#" + random2)(`${threadIn4.threadName}`)), '[ THREAD ]');
+                logger(global.getText('handleCreateDatabase', 'newThread', threadID), '[ DATABASE ]');
             }
             if (!allUserID.includes(senderID) || !userName.has(senderID)) {
                 const infoUsers = await Users.getInfo(senderID),
@@ -53,7 +46,7 @@ module.exports = function ({ Users, Threads, Currencies }) {
                 await Users.createData(senderID, setting3)
                 allUserID.push(senderID) 
                 userName.set(senderID, infoUsers.name)
-                logger(global.getText('handleCreateDatabase', 'newUser', chalk.hex("#" + random)(`New users: `) + chalk.hex("#" + random1)(`${singleData.name}`) + " || " + chalk.hex("#" + random2)(`${senderID}`)), '[ USER ]');
+                logger(global.getText('handleCreateDatabase', 'newUser', senderID), '[ DATABASE ]');
             }
             if (!allCurrenciesID.includes(senderID)) {
                 const setting4 = {};
