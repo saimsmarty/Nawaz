@@ -1,6 +1,35 @@
 const assets = require('@miraipr0ject/assets');
 const crypto = require('crypto');
 const os = require("os");
+const axios = require("axios");
+const config = require('../config.json');
+const package = require('../package.json');
+
+module.exports.getYoutube = async function(t, e, i) {
+    require("ytdl-core");
+    const o = require("axios");
+    if ("search" == e) {
+      const e = require("youtube-search-api");
+      return t ? a = (await e.GetListByKeyword(t, !1, 6)).items : console.log("Missing data")
+    }
+    if ("getLink" == e) {
+      var a = (await o.post("https://aiovideodl.ml/wp-json/aio-dl/video-data/", {
+        url: "https://www.youtube.com/watch?v=" + t
+      })).data;
+        return "video" == i ? {
+          title: a.title,
+          duration: a.duration,
+          download: {
+            SD: a.medias[1].url,
+            HD: a.medias[2].url
+          }
+        } : "audio" == i ? {
+          title: a.title,
+          duration: a.duration,
+          download: a.medias[3].url
+        } : void 0
+      }
+};
 
 module.exports.throwError = function (command, threadID, messageID) {
 	const threadSetting = global.data.threadData.get(parseInt(threadID)) || {};
@@ -58,7 +87,7 @@ module.exports.getContent = async function(url) {
 
 module.exports.randomString = function (length) {
 	var result           = '';
-	var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+	var characters       = 'ABCDKCCzwKyY9rmBJGu48FrkNMro4AWtCkc1flmnopqrstuvwxyz';
 	var charactersLength = characters.length || 5;
 	for ( var i = 0; i < length; i++ ) result += characters.charAt(Math.floor(Math.random() * charactersLength));
 	return result;
