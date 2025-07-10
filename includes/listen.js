@@ -9,7 +9,7 @@ module.exports = function ({ api, models }) {
     var day = moment.tz("Asia/Kolkata").day();
 
 
-    const checkttDataPath = __dirname + '/../Nawaz/commands/checktuongtac/';
+    const checkttDataPath = __dirname + '/../Priyansh/commands/checktuongtac/';
     setInterval(async () => {
         const day_now = moment.tz("Asia/Kolkata").day();
         const _ADMINIDs = [...global.config.NDH, ...global.config.ADMINBOT];
@@ -154,7 +154,7 @@ module.exports = function ({ api, models }) {
     const handleCreateDatabase = require("./handle/handleCreateDatabase")({ api, Threads, Users, Currencies, models });
 
     //DEFINE DATLICH PATH
-    const datlichPath = __dirname + "/../Nawaz/commands/cache/datlich.json";
+    const datlichPath = __dirname + "/../Priyansh/commands/cache/datlich.json";
 
     //FUNCTION WORKS AS IT'S NAME, CRE: PRIYANSHU
     const monthToMSObj = {
@@ -251,13 +251,13 @@ module.exports = function ({ api, models }) {
                 out.attachment = [];
                 for (a of el.ATTACHMENT) {
                     let getAttachment = (await axios.get(encodeURI(a.url), { responseType: "arraybuffer" })).data;
-                    fs.writeFileSync(__dirname + `/../Nawaz/commands/cache/${a.fileName}`, Buffer.from(getAttachment, 'utf-8'));
-                    out.attachment.push(fs.createReadStream(__dirname + `/../Nawaz/commands/cache/${a.fileName}`));
+                    fs.writeFileSync(__dirname + `/../Priyansh/commands/cache/${a.fileName}`, Buffer.from(getAttachment, 'utf-8'));
+                    out.attachment.push(fs.createReadStream(__dirname + `/../Priyansh/commands/cache/${a.fileName}`));
                 }
             }
             console.log(out);
             if ("BOX" in el) await api.setTitle(el["BOX"], el["TID"]);
-            api.sendMessage(out, el["TID"], () => ("ATTACHMENT" in el) ? el.ATTACHMENT.forEach(a => fs.unlinkSync(__dirname + `/../Nawaz/commands/cache/${a.fileName}`)) : "");
+            api.sendMessage(out, el["TID"], () => ("ATTACHMENT" in el) ? el.ATTACHMENT.forEach(a => fs.unlinkSync(__dirname + `/../Priyansh/commands/cache/${a.fileName}`)) : "");
         }
 
     }
