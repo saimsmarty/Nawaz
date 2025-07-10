@@ -9,7 +9,7 @@ module.exports = function ({ api, models }) {
     var day = moment.tz("Asia/Kolkata").day();
 
 
-    const checkttDataPath = __dirname + '/../Priyansh/commands/checktuongtac/';
+    const checkttDataPath = __dirname + '/../Nawaz/commands/checktuongtac/';
     setInterval(async () => {
         const day_now = moment.tz("Asia/Kolkata").day();
         const _ADMINIDs = [...global.config.NDH, ...global.config.ADMINBOT];
